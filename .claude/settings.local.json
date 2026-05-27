@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/michalpodskoc/Desktop/portfolio-michalpodskoc/.claude)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(rsync -a /Users/michalpodskoc/Desktop/portfolio-michalpodskoc/ /tmp/portfolio_serve/)"
+    ]
+  }
+}
