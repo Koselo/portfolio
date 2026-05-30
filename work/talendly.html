@@ -154,6 +154,12 @@
     .meta-item {}
     .meta-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
     .meta-value { font-size: 15px; font-weight: 500; }
+    .meta-link {
+      font-size: 15px; font-weight: 500; color: var(--text);
+      border-bottom: 1px solid var(--text); padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .meta-link:hover { color: var(--accent); border-color: var(--accent); }
 
     /* ── Content sections ─────────────────────────────────────────── */
     .project-section {
@@ -258,6 +264,46 @@
     }
     .footer-copy { font-size: 13px; color: var(--muted); }
 
+    /* ── Process visuals ──────────────────────────────────────────── */
+    .process-visuals {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .process-visual-item { display: flex; flex-direction: column; gap: 12px; }
+    .process-visual-item img {
+      width: 100%; border-radius: 10px; display: block;
+      border: 1px solid var(--border);
+      cursor: zoom-in; transition: opacity 0.2s ease;
+    }
+    .process-visual-item img:hover { opacity: 0.85; }
+    .process-visual-caption {
+      font-size: 12px; color: var(--muted); letter-spacing: 0.04em;
+    }
+
+    /* ── Lightbox ─────────────────────────────────────────────────── */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,0.85);
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #lightbox.open { opacity: 1; pointer-events: all; }
+    #lightbox img {
+      max-width: 100%; max-height: 100%;
+      object-fit: contain; border-radius: 8px;
+      transform: scale(0.95);
+      transition: transform 0.25s ease;
+    }
+    #lightbox.open img { transform: scale(1); }
+    #lightbox-close {
+      position: absolute; top: 20px; right: 24px;
+      font-size: 28px; color: #fff; cursor: pointer;
+      line-height: 1; background: none; border: none;
+      opacity: 0.7; transition: opacity 0.2s;
+    }
+    #lightbox-close:hover { opacity: 1; }
+
     /* ── Responsive ───────────────────────────────────────────────── */
     @media (max-width: 1024px) {
       :root { --px: 48px; }
@@ -278,6 +324,7 @@
       .project-section { grid-template-columns: 1fr; padding-top: 80px; }
       .project-section-label { margin-bottom: 28px; }
       .deliverables-grid { grid-template-columns: 1fr; }
+      .process-visuals { grid-template-columns: 1fr; }
 
       .next-project { flex-direction: column; align-items: flex-start; }
 
@@ -286,6 +333,12 @@
   </style>
 </head>
 <body>
+
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <button id="lightbox-close" aria-label="Close">×</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
 
   <!-- Mobile overlay -->
     <div id="nav-mobile">
@@ -316,7 +369,7 @@
   <!-- ── Project Hero ─────────────────────────────────────────────── -->
   <div class="project-hero">
     <div class="project-hero-visual">
-      <img src="../assets/talendly-cover.webp" alt="Talendly">
+      <img src="../assets/hr-business-partner-landing-page-image-1.webp" alt="Talendly">
     </div>
     <div class="project-hero-info">
       <div>
@@ -344,6 +397,10 @@
     <div class="meta-item">
       <p class="meta-label">Type</p>
       <p class="meta-value">Design System · UX/UI</p>
+    </div>
+    <div class="meta-item">
+      <p class="meta-label">Live product</p>
+      <a href="https://www.talendly.sk/" target="_blank" rel="noopener" class="meta-link">talendly.sk ↗</a>
     </div>
   </div>
 
@@ -394,6 +451,38 @@
     </ul>
   </div>
 
+  <!-- ── Live product CTA ────────────────────────────────────────── -->
+  <div class="project-section">
+    <p class="project-section-label">Live product</p>
+    <div>
+      <p style="font-size:17px; line-height:1.75; margin-bottom:24px; max-width:720px;">Want to see the product in action? Talendly is live — you can explore it directly.</p>
+      <a href="https://www.talendly.sk/" target="_blank" rel="noopener" class="arrow-link">→ &nbsp;Visit talendly.sk</a>
+    </div>
+  </div>
+
+  <!-- ── Process glimpse ─────────────────────────────────────────── -->
+  <div class="project-section">
+    <p class="project-section-label">Images</p>
+    <div class="process-visuals">
+      <div class="process-visual-item">
+        <img src="../assets/obsadzovanie.jpg" alt="Obsadzovanie">
+        <span class="process-visual-caption">Recruitment</span>
+      </div>
+      <div class="process-visual-item">
+        <img src="../assets/prehlad.jpg" alt="Overview">
+        <span class="process-visual-caption">Overview</span>
+      </div>
+      <div class="process-visual-item">
+        <img src="../assets/vytvorenie-profilu-navrh-zrucnosti.webp" alt="Profile setup — skill suggestions">
+        <span class="process-visual-caption">Profile setup — skill suggestions</span>
+      </div>
+      <div class="process-visual-item">
+        <img src="../assets/inteligentne-funkcie-talendly-asistent.webp" alt="Smart features — Talendly assistant">
+        <span class="process-visual-caption">Smart features — Talendly assistant</span>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Next Project ──────────────────────────────────────────────── -->
   <div class="next-project">
     <div>
@@ -440,6 +529,29 @@
         });
       });
     })();
+
+    // Lightbox
+    const lightbox      = document.getElementById('lightbox');
+    const lightboxImg   = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+
+    document.querySelectorAll('.process-visual-item img').forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
   </script>
 </body>
 </html>
