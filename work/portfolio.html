@@ -108,6 +108,7 @@
       color: var(--text);
       background: var(--surface); border-radius: 100px;
       padding: 5px 12px; white-space: nowrap;
+      width: fit-content; align-self: start; justify-self: start;
     }
 
     .project-title {
@@ -277,6 +278,17 @@
       .next-project { flex-direction: column; align-items: flex-start; }
       .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
     }
+
+    /* ── Page reveal ──────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .project-hero-visual { animation: fadeUp 0.65s ease both; }
+    .project-hero-info   { animation: fadeUp 0.65s 0.13s ease both; }
+    .meta-strip          { animation: fadeUp 0.65s 0.24s ease both; }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -465,6 +477,19 @@
     lightboxClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    // Page reveal — scroll sections
+    (function() {
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.06 });
+      document.querySelectorAll('.project-section, .next-project, footer').forEach(function(el) {
+        el.classList.add('reveal');
+        obs.observe(el);
+      });
+    })();
   </script>
 
 </body>
