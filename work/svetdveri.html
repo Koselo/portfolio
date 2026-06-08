@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NDA Project 01 — Michal Podskoč</title>
+  <title>Svet Dverí — Michal Podskoč</title>
   <link rel="icon" type="image/png" href="../assets/favicon2.png">
   <link rel="shortcut icon" href="../assets/favicon2.png">
   <link rel="preconnect" href="https://api.fontshare.com">
@@ -78,10 +78,6 @@
     .nav-mobile-links a { font-size: 40px; font-weight: 700; letter-spacing: -0.03em; color: var(--text); }
 
     /* ── Shared ───────────────────────────────────────────────────── */
-    .section-label {
-      font-size: 11px; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
-    }
     .arrow-link {
       display: inline-flex; align-items: center; gap: 10px;
       font-size: 15px; font-weight: 400;
@@ -94,20 +90,14 @@
     .project-hero { padding-top: var(--nav-h); }
 
     .project-hero-visual {
-      width: 100%; max-height: 75vh;
-      overflow: hidden; background: var(--bg);
+      width: 100%;
+      background: var(--bg);
       position: relative;
+      max-height: 75vh;
+      overflow: hidden;
     }
     .project-hero-visual img {
       width: 100%; height: auto; display: block;
-    }
-    .nda-badge {
-      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 2;
-      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--muted);
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 100px; padding: 6px 16px;
     }
 
     .project-hero-info {
@@ -146,6 +136,8 @@
     }
     .meta-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
     .meta-value { font-size: 15px; font-weight: 500; }
+    .meta-link { font-size: 15px; font-weight: 500; border-bottom: 1px solid var(--text); padding-bottom: 1px; transition: color 0.2s ease, border-color 0.2s ease; }
+    .meta-link:hover { color: var(--accent); border-color: var(--accent); }
 
     /* ── Content sections ─────────────────────────────────────────── */
     .project-section {
@@ -184,19 +176,45 @@
     .deliverable-card-title { font-size: 17px; font-weight: 500; margin-bottom: 12px; }
     .deliverable-card-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
 
-    /* ── Impact ───────────────────────────────────────────────────── */
-    .impact-list {
-      list-style: none;
-      display: flex; flex-direction: column; gap: 16px;
+    /* ── Images ───────────────────────────────────────────────────── */
+    .process-visuals {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
     }
-    .impact-list li {
-      font-size: 18px; font-weight: 400; line-height: 1.5;
-      padding-left: 28px; position: relative;
+    .process-visual-item { display: flex; flex-direction: column; gap: 12px; }
+    .process-visual-item img {
+      width: 100%; border-radius: 10px; display: block;
+      border: 1px solid var(--border);
+      cursor: zoom-in; transition: opacity 0.2s ease;
     }
-    .impact-list li::before {
-      content: '→'; position: absolute; left: 0;
-      color: var(--text); font-size: 14px;
+    .process-visual-item img:hover { opacity: 0.85; }
+    .process-visual-caption {
+      font-size: 12px; color: var(--muted); letter-spacing: 0.04em;
     }
+
+    /* ── Lightbox ─────────────────────────────────────────────────── */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,0.85);
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #lightbox.open { opacity: 1; pointer-events: all; }
+    #lightbox img {
+      max-width: 100%; max-height: 100%;
+      object-fit: contain; border-radius: 8px;
+      transform: scale(0.95);
+      transition: transform 0.25s ease;
+    }
+    #lightbox.open img { transform: scale(1); }
+    #lightbox-close {
+      position: absolute; top: 20px; right: 24px;
+      font-size: 28px; color: #fff; cursor: pointer;
+      line-height: 1; background: none; border: none;
+      opacity: 0.7; transition: opacity 0.2s;
+    }
+    #lightbox-close:hover { opacity: 1; }
 
     /* ── Next project ─────────────────────────────────────────────── */
     .next-project {
@@ -254,6 +272,7 @@
       .project-section { grid-template-columns: 1fr; padding-top: 80px; }
       .project-section-label { margin-bottom: 28px; }
       .deliverables-grid { grid-template-columns: 1fr; }
+      .process-visuals { grid-template-columns: 1fr; }
       .next-project { flex-direction: column; align-items: flex-start; }
       .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
     }
@@ -272,7 +291,12 @@
 </head>
 <body>
 
-    <div id="nav-mobile">
+  <div id="lightbox">
+    <button id="lightbox-close" aria-label="Close">×</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <div id="nav-mobile">
     <ul class="nav-mobile-links">
       <li><a href="/#work"    class="m-link">Work</a></li>
       <li><a href="/#about"   class="m-link">About</a></li>
@@ -300,31 +324,34 @@
   <!-- ── Project Hero ─────────────────────────────────────────────── -->
   <div class="project-hero">
     <div class="project-hero-visual">
-      <img src="../assets/nda1-cover.png" alt="">
-      <span class="nda-badge">NDA — Confidential</span>
+      <img src="../assets/Svetdveri1.png" alt="Svet Dverí">
     </div>
     <div class="project-hero-info">
       <div>
         <a href="/" class="project-back">← Back to work</a>
-        <h1 class="project-title">NDA Project 01</h1>
+        <h1 class="project-title">Svet Dverí</h1>
       </div>
-      <span class="project-type-tag">UI Design · Component Library</span>
+      <span class="project-type-tag">UI Design · Design System</span>
     </div>
   </div>
 
   <!-- ── Meta Strip ───────────────────────────────────────────────── -->
   <div class="meta-strip">
     <div class="meta-item">
-      <p class="meta-label">Client</p>
-      <p class="meta-value">Confidential</p>
-    </div>
-    <div class="meta-item">
       <p class="meta-label">Role</p>
       <p class="meta-value">UI Designer</p>
     </div>
     <div class="meta-item">
+      <p class="meta-label">Year</p>
+      <p class="meta-value">2026</p>
+    </div>
+    <div class="meta-item">
       <p class="meta-label">Type</p>
-      <p class="meta-value">UI Design · Component Library</p>
+      <p class="meta-value">Design System · UI Design</p>
+    </div>
+    <div class="meta-item">
+      <p class="meta-label">Live product</p>
+      <a href="https://konfigurator.svetdveri.sk/" target="_blank" rel="noopener" class="meta-link">konfigurator.svetdveri.sk ↗</a>
     </div>
   </div>
 
@@ -332,50 +359,70 @@
   <div class="project-section">
     <p class="project-section-label">Challenge</p>
     <div class="project-body">
-      <p>The product had an existing design foundation, but UI quality wasn't keeping pace with the product's ambitions. Components were inconsistent, the library had accumulated debt, and the gap between design and production was creating friction.</p>
-      <p>My role was to elevate quality and bring structure back to the system.</p>
+      <p>Svet Dverí needed a design system built entirely from scratch. There were no shared tokens, no component library, and no visual consistency across their configurator and other digital surfaces. Before any screen could be designed, the foundation had to be laid properly.</p>
     </div>
   </div>
 
   <!-- ── What I Delivered ─────────────────────────────────────────── -->
   <div class="project-section">
     <p class="project-section-label">What I Delivered</p>
-
     <div class="deliverables-grid">
       <div class="deliverable-card">
         <p class="deliverable-card-num">01</p>
-        <p class="deliverable-card-title">Pixel-Perfect UI Design</p>
-        <p class="deliverable-card-desc">Precise, detail-oriented screens focused on clarity, consistency, and a modern visual standard — prepared for clean developer handoff.</p>
+        <p class="deliverable-card-title">Color Token System</p>
+        <p class="deliverable-card-desc">Defined the full color palette together with their developer, then structured it into Primitives and Semantics using Token Studio. Generated all color, typography, and spacing tokens.</p>
       </div>
       <div class="deliverable-card">
         <p class="deliverable-card-num">02</p>
-        <p class="deliverable-card-title">Design Library Management</p>
-        <p class="deliverable-card-desc">Maintained and optimized the existing design library — reducing inconsistencies, cleaning up debt, keeping the system easy to use for designers and developers.</p>
+        <p class="deliverable-card-title">Multibrand Design System</p>
+        <p class="deliverable-card-desc">Built a flexible multibrand design system in Figma using modes — brand switching was handled entirely within a single Figma file, no duplication needed.</p>
       </div>
       <div class="deliverable-card">
         <p class="deliverable-card-num">03</p>
-        <p class="deliverable-card-title">Component Expansion</p>
-        <p class="deliverable-card-desc">Extended the library with new reusable components that improved design speed and strengthened consistency as the product evolved.</p>
+        <p class="deliverable-card-title">Pixel-Perfect UI Screens</p>
+        <p class="deliverable-card-desc">Designed key product screens with precise visual execution — every detail consistent with the token system, handoff-ready, and built to the standard the product deserved.</p>
       </div>
     </div>
   </div>
 
-  <!-- ── Impact ───────────────────────────────────────────────────── -->
+  <!-- ── Live product ──────────────────────────────────────────────── -->
   <div class="project-section">
-    <p class="project-section-label">Impact</p>
-    <ul class="impact-list">
-      <li>Higher UI quality and visual consistency across the product.</li>
-      <li>Faster design and development — fewer decisions to make from scratch.</li>
-      <li>A cleaner library the team can actually maintain.</li>
-    </ul>
+    <p class="project-section-label">Live product</p>
+    <div>
+      <p style="font-size:17px; line-height:1.75; margin-bottom:24px; max-width:720px;">Want to see the configurator in action? It's live — you can explore it directly.</p>
+      <a href="https://konfigurator.svetdveri.sk/" target="_blank" rel="noopener" class="arrow-link">→ &nbsp;Visit konfigurator.svetdveri.sk</a>
+    </div>
+  </div>
+
+  <!-- ── Images ───────────────────────────────────────────────────── -->
+  <div class="project-section">
+    <p class="project-section-label">Images</p>
+    <div class="process-visuals">
+      <div class="process-visual-item">
+        <img src="../assets/Svetdveri1.png" alt="Svet Dverí — screen 1">
+        <span class="process-visual-caption">Configurator UI</span>
+      </div>
+      <div class="process-visual-item">
+        <img src="../assets/Svetdveri2.png" alt="Svet Dverí — screen 2">
+        <span class="process-visual-caption">Design system — color tokens</span>
+      </div>
+      <div class="process-visual-item">
+        <img src="../assets/Svetdveri3.png" alt="Svet Dverí — screen 3">
+        <span class="process-visual-caption">Component library</span>
+      </div>
+      <div class="process-visual-item">
+        <img src="../assets/Svetdveri4.png" alt="Svet Dverí — screen 4">
+        <span class="process-visual-caption">Multibrand — mode switching</span>
+      </div>
+    </div>
   </div>
 
   <!-- ── Next Project ──────────────────────────────────────────────── -->
   <div class="next-project">
     <div>
-      <p class="next-project-label">Back to start</p>
-      <a href="nda-3.html" class="next-project-link">
-        <p class="next-project-title">NDA Project 03</p>
+      <p class="next-project-label">Next project</p>
+      <a href="talendly.html" class="next-project-link">
+        <p class="next-project-title">Talendly</p>
         <span class="next-project-arrow">↗</span>
       </a>
     </div>
@@ -389,13 +436,13 @@
       <a href="/#contact">Contact</a>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">© 2025 Michal Podskoč</p>
+      <p class="footer-copy">© 2026 Michal Podskoč</p>
       <p class="footer-copy">UX/UI Designer</p>
     </div>
   </footer>
 
   <script>
-        (function () {
+    (function () {
       const nav    = document.getElementById('nav');
       const burger = document.getElementById('burger');
       const mobile = document.getElementById('nav-mobile');
@@ -416,7 +463,30 @@
       });
     })();
 
-    // Page reveal — scroll sections
+    // Lightbox
+    const lightbox      = document.getElementById('lightbox');
+    const lightboxImg   = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+
+    document.querySelectorAll('.process-visual-item img').forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    // Page reveal
     (function() {
       var obs = new IntersectionObserver(function(entries) {
         entries.forEach(function(e) {

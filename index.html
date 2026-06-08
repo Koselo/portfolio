@@ -341,6 +341,17 @@
     }
     .work-card:hover .work-card-thumb img { transform: scale(1.04); }
 
+    .work-card-thumb--logo {
+      background: #F2F0EC;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .work-card-thumb--logo img {
+      object-fit: contain;
+      padding: 48px;
+      width: 100%; height: 100%;
+    }
+    .work-card:hover .work-card-thumb--logo img { transform: scale(1.04); }
+
     .work-card-overlay {
       position: absolute; inset: 0;
       background: rgba(26,26,26,0.45);
@@ -773,8 +784,8 @@
       <!-- carousel — bleeds to right viewport edge (no right padding = signals scrollability) -->
       <div class="work-scroll" id="workScroll">
         <a href="work/portfolio.html" class="work-card">
-          <div class="work-card-thumb">
-            <img src="assets/Portfolio-project.png" alt="My New Portfolio">
+          <div class="work-card-thumb work-card-thumb--logo" style="background:#F2F0EC;">
+            <img src="assets/character-main.svg" alt="Personal Portfolio" style="padding:96px;">
             <div class="work-card-overlay"><span>View project</span></div>
           </div>
           <div class="work-card-info">
@@ -786,14 +797,14 @@
           </div>
         </a>
 
-        <a href="work/nda-3.html" class="work-card">
-          <div class="work-card-thumb">
-            <img src="assets/nda3-cover.png" alt="NDA Project 03">
+        <a href="work/svetdveri.html" class="work-card">
+          <div class="work-card-thumb work-card-thumb--logo">
+            <img src="assets/svetdveri-logo.svg" alt="Svet Dverí">
             <div class="work-card-overlay"><span>View project</span></div>
           </div>
           <div class="work-card-info">
             <div>
-              <p class="work-card-title">NDA Project 03</p>
+              <p class="work-card-title">Svet Dverí</p>
               <p class="work-card-meta">UI Design · Design System · 2026</p>
             </div>
             <span class="work-card-arrow">↗</span>
@@ -801,8 +812,8 @@
         </a>
 
         <a href="work/talendly.html" class="work-card">
-          <div class="work-card-thumb">
-            <img src="assets/hr-business-partner-landing-page-image-1.webp" alt="Talendly">
+          <div class="work-card-thumb work-card-thumb--logo">
+            <img src="assets/Talendly-logo.png" alt="Talendly">
             <div class="work-card-overlay"><span>View project</span></div>
           </div>
           <div class="work-card-info">
@@ -815,8 +826,8 @@
         </a>
 
         <a href="work/nda-2.html" class="work-card">
-          <div class="work-card-thumb">
-            <img src="assets/nda2-cover.png" alt="NDA Project 02">
+          <div class="work-card-thumb work-card-thumb--logo">
+            <img src="assets/BadgeNDA.png" alt="NDA Project 02" style="padding:80px;">
             <div class="work-card-overlay"><span>View project</span></div>
           </div>
           <div class="work-card-info">
@@ -829,8 +840,8 @@
         </a>
 
         <a href="work/nda-1.html" class="work-card">
-          <div class="work-card-thumb">
-            <img src="assets/nda1-cover.png" alt="NDA Project 01">
+          <div class="work-card-thumb work-card-thumb--logo">
+            <img src="assets/BadgeNDA.png" alt="NDA Project 01" style="padding:80px;">
             <div class="work-card-overlay"><span>View project</span></div>
           </div>
           <div class="work-card-info">
