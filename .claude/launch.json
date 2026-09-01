@@ -6,6 +6,18 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["/tmp/serve_portfolio.py"],
       "port": 4444
+    },
+    {
+      "name": "zazitatry-prototype",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["/tmp/serve_zazitatry_prototype.py"],
+      "port": 4455
+    },
+    {
+      "name": "medcenter-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["/tmp/serve_medcenter_preview.py"],
+      "port": 4467
     }
   ]
 }
