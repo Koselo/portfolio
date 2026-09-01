@@ -2,1174 +2,2151 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Michal Podskoč — UX/UI Designer</title>
-  <link rel="icon" type="image/png" href="assets/favicon2.png">
-  <link rel="shortcut icon" href="assets/favicon2.png">
-  <link rel="preconnect" href="https://api.fontshare.com">
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    /* ─── Reset + Variables ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #FFFFFF;
-      --text:    #1A1A1A;
-      --accent:  #F04E46;
-      --muted:   #8A8178;
-      --border:  #E3E0D9;
-      --surface: #EFEEE9;
-      --px:      80px;
-      --nav-h:   80px;
+      --bg:      #EDEBE8;
+      --card:    #FFFFFF;
+      --border:  #DEDBD5;
+      --text:    #111111;
+      --muted:   #6B6560;
+      --accent:  #C13B35;
+      --mono:    'Space Mono', monospace;
+      --radius:  16px;
+      --card-w:  780px;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Satoshi', sans-serif;
+      font-family: var(--mono);
       background: var(--bg);
       color: var(--text);
-      font-size: 16px;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    img { display: block; }
-
-    /* ─── Loader ────────────────────────────────────────────────────── */
-    #loader {
-      position: fixed; inset: 0;
-      background: var(--bg);
-      z-index: 1000;
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity 0.6s ease;
-    }
-    #loader.fade { opacity: 0; pointer-events: none; }
-    #loader.hidden { display: none; }
-
-    .loader-icon-wrap {
-      width: clamp(80px, 12vw, 140px);
-      height: clamp(80px, 12vw, 140px);
-      clip-path: inset(-200% -200% -18% -200%);
-    }
-    .loader-icon {
-      width: 100%; height: 100%;
-      animation: loaderSequence 2.8s ease forwards;
-    }
-    @keyframes loaderSequence {
-      0%   { transform: translateY(130%) scale(1); }
-      22%  { transform: translateY(0)    scale(1); }
-      38%  { transform: translateY(0)    scale(1.1);  }
-      52%  { transform: translateY(0)    scale(0.97); }
-      63%  { transform: translateY(0)    scale(1);    }
-      76%  { transform: translateY(0)    scale(1);    }
-      100% { transform: translateY(130%) scale(1);    }
-    }
-
-/* ─── Scroll reveal ─────────────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    /* ─── Nav ───────────────────────────────────────────────────────── */
-    #nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: var(--nav-h); z-index: 100;
-      border-bottom: 1px solid transparent;
-      transition: background 0.3s ease, border-color 0.3s ease;
-    }
-    #nav.scrolled { background: var(--bg); border-color: var(--border); }
-
-    .nav-inner {
-      padding: 0 var(--px); height: 100%;
-      display: flex; align-items: center; justify-content: space-between; gap: 24px;
-    }
-
-    .nav-logo,
-    .nav-links a,
-    .nav-cta {
-      font-family: 'Satoshi', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.01em;
-      white-space: nowrap;
-    }
-
-    .nav-links {
-      display: flex; gap: 20px; list-style: none;
-    }
-    .nav-links a { transition: opacity 0.2s ease; }
-    .nav-links a:hover { opacity: 0.5; }
-
-    .nav-logo { flex-shrink: 0; }
-
-    .nav-cta {
-      border-bottom: 1px solid var(--text); padding-bottom: 1px; flex-shrink: 0;
-      transition: opacity 0.2s ease;
-    }
-    .nav-cta:hover { opacity: 0.5; }
-
-    .nav-burger {
-      display: none; flex-direction: column; gap: 5px;
-      cursor: pointer; background: none; border: none; padding: 4px; flex-shrink: 0;
-    }
-    .nav-burger span { display: block; width: 22px; height: 1.5px; background: var(--text); }
-
-    #nav-mobile {
-      position: fixed; inset: 0; background: var(--bg); z-index: 99;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-    }
-    #nav-mobile.open { opacity: 1; pointer-events: all; }
-    .nav-mobile-links {
-      list-style: none; text-align: center; display: flex; flex-direction: column; gap: 24px;
-    }
-    .nav-mobile-links a {
-      font-size: 40px; font-weight: 700; letter-spacing: -0.03em; color: var(--text);
-    }
-
-    /* ─── Hero ──────────────────────────────────────────────────────── */
-    #hero {
       min-height: 100vh;
-      padding-top: var(--nav-h);
-      display: flex; flex-direction: column;
     }
 
-    .hero-body {
-      flex: 1;
+    /* ── NAV ─────────────────────────────────────────────── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 40px;
+      max-width: calc(var(--card-w) + 80px);
+      margin: 0 auto;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+    .nav-logo-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      text-transform: uppercase;
+    }
+    .nav-email {
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1px;
+      transition: color .2s, border-color .2s;
+    }
+    .nav-email:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ── MAIN FEED ───────────────────────────────────────── */
+    .feed {
+      max-width: calc(var(--card-w) + 80px);
+      margin: 0 auto;
+      padding: max(20px, calc(50svh - 290px)) 40px 60px;
       display: flex;
       flex-direction: column;
-      justify-content: space-evenly;
-    }
-    .hero-name-block {
-      padding: 0 var(--px);
-      overflow: hidden;
-      line-height: 0;
-    }
-    .hero-name {
-      display: block;
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 0.9;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    .hero-name-line { display: inline; }
-    .hero-name-line:first-child::after { content: '\00a0'; }
-
-    @media (max-width: 768px) {
-      .hero-name { white-space: normal; line-height: 0.92; }
-      .hero-name-line { display: block; font-size: inherit; }
-      .hero-name-line:first-child::after { content: none; }
-    }
-
-    .hero-chars {
-      display: flex;
-      justify-content: space-around;
       align-items: center;
-      padding: 0 var(--px);
-    }
-    .hero-char {
-      height: clamp(100px, 22vh, 280px);
-      width: auto;
-      display: block;
-      animation: charFloat 3.5s ease-in-out infinite;
-    }
-    .hero-char:nth-child(2) { animation-delay: -1.2s; }
-    .hero-char:nth-child(3) { animation-delay: -2.4s; }
-
-    @keyframes charFloat {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-10px); }
-    }
-    @keyframes charFloatFlip {
-      0%, 100% { transform: scaleX(-1) translateY(0); }
-      50%       { transform: scaleX(-1) translateY(-10px); }
-    }
-    .hero-char--flip { animation-name: charFloatFlip; }
-
-    .hero-foot {
-      padding: 0 var(--px) 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 40px;
-    }
-    .hero-tagline {
-      font-size: clamp(22px, 2.8vw, 40px);
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.025em;
-      margin-bottom: 14px;
-    }
-    .hero-cta-link {
-      display: inline-block;
-      font-size: 14px; font-weight: 400;
-      border-bottom: 1px solid var(--text);
-      padding-bottom: 1px;
-      transition: color 0.2s ease, border-color 0.2s ease;
-    }
-    .hero-cta-link:hover { color: var(--accent); border-color: var(--accent); }
-    .hero-arrow {
-      font-size: 20px; color: var(--text);
-      flex-shrink: 0;
-      cursor: pointer;
-      text-decoration: none;
-      animation: bobDown 2.5s ease-in-out infinite;
-    }
-    @keyframes bobDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
-
-    /* ─── Shared helpers ────────────────────────────────────────────── */
-    .link-underline {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 14px; font-weight: 700;
-      border-bottom: 1px solid var(--text); padding-bottom: 1px;
-      transition: color 0.2s ease, border-color 0.2s ease;
-    }
-    .link-underline:hover { color: var(--accent); border-color: var(--accent); }
-
-    /* ─── Section sidebar layout ────────────────────────────────────── */
-    .sec {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 0 40px;
-      padding: 160px var(--px) 0;
-      align-items: start;
-      /* allow carousel to bleed beyond right padding */
-      overflow: visible;
-    }
-    /* prevent grid items from overflowing their 1fr allocation */
-    .sec > div, .sec > h2 { min-width: 0; }
-    .sec-label {
-      font-size: 11px; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted);
-      padding-top: 6px;
+      gap: 0;
     }
 
-    /* ─── About ─────────────────────────────────────────────────────── */
-    .about-hl {
-      font-size: clamp(26px, 3.2vw, 48px);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.025em;
-    }
-    /* arrow in the left label column, matching the heading's cap-height */
-    .sec-hl-arrow {
-      font-size: clamp(26px, 3.2vw, 48px);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.025em;
-      color: var(--text);
-      padding-top: 0;
-    }
-
-    .about-body {
-      display: grid;
-      grid-template-columns: clamp(200px, 22vw, 320px) 1fr;
-      gap: 48px;
-      align-items: start;
-    }
-
-    .about-photo {
-      width: clamp(200px, 22vw, 320px); aspect-ratio: 3/4;
-      background: var(--surface); border-radius: 6px; overflow: hidden;
-    }
-    .about-photo img {
-      width: 100%; height: 100%; object-fit: cover; object-position: center top;
-    }
-
-    .about-intro {
-      font-size: 24px; font-weight: 700;
-      line-height: 1.3; letter-spacing: -0.015em;
-      color: var(--text); margin-bottom: 24px;
-    }
-    .about-text p:not(.about-intro) {
-      font-size: 16px; line-height: 1.75; color: var(--text); margin-bottom: 16px;
-    }
-    .about-tools {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      margin: 24px 0 28px;
-    }
-    .about-badge {
-      display: inline-flex; align-items: center;
-      padding: 5px 12px;
-      background: var(--surface);
-      border-radius: 100px;
-      font-size: 12px; font-weight: 500;
-      color: var(--text);
-      letter-spacing: 0.01em;
-      white-space: nowrap;
-    }
-
-    /* ─── Work ──────────────────────────────────────────────────────── */
-    /* work section uses .sec but scroll bleeds to right edge */
-    .work-scroll {
-      display: flex; gap: 16px;
-      overflow-x: auto;
-      /* bleed to right viewport edge — no right padding signals scrollability */
-      width: calc(100% + var(--px));
-      margin-right: calc(-1 * var(--px));
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      cursor: grab;
-      margin-bottom: 28px;
-    }
-    .work-scroll:active { cursor: grabbing; }
-    .work-scroll::-webkit-scrollbar { display: none; }
-
-    .work-card {
-      flex: 0 0 clamp(260px, 28vw, 380px);
-      display: block; color: var(--text);
-    }
-    .work-card-thumb {
-      border-radius: 8px; overflow: hidden;
-      background: var(--surface); position: relative;
-      height: clamp(360px, 40vw, 540px);
-    }
-    .work-card-thumb img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform 0.35s ease;
-    }
-    .work-card:hover .work-card-thumb img { transform: scale(1.04); }
-
-    .work-card-thumb--logo {
-      background: #F2F0EC;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .work-card-thumb--logo img {
-      object-fit: contain;
-      padding: 48px;
-      width: 100%; height: 100%;
-    }
-    .work-card:hover .work-card-thumb--logo img { transform: scale(1.04); }
-
-    .work-card-overlay {
-      position: absolute; inset: 0;
-      background: rgba(26,26,26,0.45);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.25s ease; border-radius: 8px;
-    }
-    .work-card:hover .work-card-overlay { opacity: 1; }
-    .work-card-overlay span {
-      font-size: 11px; font-weight: 500; color: var(--bg);
-      letter-spacing: 0.1em; text-transform: uppercase;
-    }
-
-    /* Employment card hover overlay */
-    .emp-card-overlay {
-      position: absolute; inset: 0;
-      background: rgba(15, 15, 15, 0.88);
-      display: flex; flex-direction: column;
-      justify-content: flex-end;
-      padding: 24px;
-      opacity: 0; transition: opacity 0.25s ease; border-radius: 8px;
-    }
-    .work-card:hover .emp-card-overlay { opacity: 1; }
-    .emp-card-overlay p {
-      font-size: 14px; font-weight: 500;
-      color: #ffffff; line-height: 1.55;
-      margin: 0;
-    }
-    .emp-card-overlay span {
-      display: block;
-      font-size: 11px; font-weight: 500;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 0.08em; text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .work-card-info {
-      padding: 14px 0 0;
-      display: flex; justify-content: space-between; align-items: flex-start;
-    }
-    .work-card-title { font-size: 16px; font-weight: 500; margin-bottom: 3px; }
-    .work-card-meta { font-size: 12px; color: var(--muted); }
-    .work-card-arrow {
-      font-size: 14px; color: var(--muted); flex-shrink: 0; margin-top: 2px;
-      transition: transform 0.2s ease, color 0.2s ease;
-    }
-    .work-card:hover .work-card-arrow { transform: translate(3px,-3px); color: var(--text); }
-
-    .work-cta {
-      display: flex; justify-content: flex-end;
-      margin-bottom: 56px;
-    }
-
-
-    /* ─── Skills ────────────────────────────────────────────────────── */
-    .skills-words {
+    /* ── CARD ────────────────────────────────────────────── */
+    .card {
       width: 100%;
-      margin-bottom: 56px;
+      max-width: var(--card-w);
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .5s ease, transform .5s ease;
+      pointer-events: none;
     }
-    .skill-word {
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .card-head {
+      padding: 28px 32px 24px;
+      border-bottom: 1.5px solid var(--border);
+    }
+    .card-tag {
       display: block;
-      font-size: clamp(32px, 6.7vw, 101px);
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 0.92;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      white-space: nowrap;
-      padding: 10px 0;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .card-body {
+      padding: 32px;
+      border-bottom: 1.5px solid var(--border);
+    }
+    .card-body p {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .card-body p:last-child { margin-bottom: 0; }
+
+    .card-foot {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ── BUTTONS ─────────────────────────────────────────── */
+    .btn {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
-      color: var(--border);
-      transition: color 0.2s ease;
-      user-select: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      transition: opacity .2s, transform .15s;
+      text-decoration: none;
     }
-    .skill-word.active { color: var(--text); }
-    .skill-word:hover:not(.active) { color: var(--muted); }
+    .btn:hover { opacity: .85; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
 
-    .skills-panel {
-      display: none;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: start;
-      width: 100%;
+    .btn-primary {
+      background: var(--text);
+      color: #fff;
+      border: none;
     }
-    .skills-panel.active { display: grid; }
-    .skills-text p {
-      font-size: 17px; line-height: 1.75; margin-bottom: 48px;
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--border);
     }
-    .skills-img {
-      border-radius: 8px; overflow: hidden;
-      background: var(--surface); aspect-ratio: 4/3;
-    }
-    .skills-img img { width: 100%; height: 100%; object-fit: cover; }
+    .btn-outline:hover { border-color: var(--text); }
 
-    /* ─── Stats ─────────────────────────────────────────────────────── */
-    #stats {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 0 40px;
-      padding: 160px var(--px) 0;
-      align-items: start;
+    /* ── CONNECTOR ───────────────────────────────────────── */
+    .connector {
+      width: 1.5px;
+      height: 48px;
+      background: var(--border);
+      flex-shrink: 0;
     }
+
+    /* ── STATS GRID ──────────────────────────────────────── */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 0;
     }
     .stat-item {
-      padding-right: 40px;
+      padding: 20px 20px 20px 0;
     }
     .stat-item + .stat-item {
-      padding-left: 40px;
-      padding-right: 40px;
-      border-left: 1px solid var(--border);
+      padding-left: 20px;
+      border-left: 1.5px solid var(--border);
     }
-    .stat-item:last-child { padding-right: 0; }
-    .stat-number {
-      font-size: clamp(40px, 5vw, 72px);
+    .stat-num {
+      font-size: clamp(28px, 4vw, 42px);
       font-weight: 700;
+      color: var(--text);
       letter-spacing: -0.04em;
       line-height: 1;
-      color: var(--text);
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
     .stat-desc {
-      font-size: 11px;
-      font-weight: 500;
+      font-size: 9px;
+      font-weight: 400;
       color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+      text-transform: uppercase;
+    }
+
+    /* ── ABOUT LAYOUT ────────────────────────────────────── */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+    .about-layout > * { min-width: 0; }
+    .about-text-col { display: flex; flex-direction: column; gap: 0; }
+    .about-photo {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      min-height: 320px;
+    }
+    .about-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+    .tool-badge {
+      font-size: 9px;
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      line-height: 1.65;
+      padding: 4px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
     }
 
-    /* ─── Process ───────────────────────────────────────────────────── */
-    .process-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 48px 40px;
-      width: 100%;
-    }
-    .process-card {}
-    .p-num { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 10px; }
-    .p-title { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
-    .p-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
-
-    /* ─── Contact ───────────────────────────────────────────────────── */
-    .contact-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 40px;
-      width: 100%;
-    }
-    .contact-eyebrow {
-      font-size: 11px; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 20px;
-    }
-    .contact-email {
-      display: block;
-      font-size: clamp(22px, 3.4vw, 52px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1;
+    /* ── CHOOSE ──────────────────────────────────────────── */
+    .choose-icon {
+      width: 40px;
+      height: 40px;
+      border: 1.5px solid var(--accent);
+      transform: rotate(45deg);
       margin-bottom: 20px;
-      border-bottom: 2px solid var(--text);
-      padding-bottom: 6px;
-      width: fit-content;
-      transition: color 0.2s ease, border-color 0.2s ease;
     }
-    .contact-email:hover { color: var(--accent); border-color: var(--accent); }
-    #contact { position: relative; }
-    #contact::before, #contact::after {
-      content: '';
-      position: absolute;
-      left: var(--px); right: var(--px);
-      height: 1px;
-      background: var(--border);
+    .choose-body {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 40px 32px;
     }
-    #contact::before { top: 80px; }
-    #contact::after  { bottom: 80px; }
-    .contact-char { width: clamp(80px, 11vw, 156px); flex-shrink: 0; }
-    .contact-char img { width: 100%; }
-    .contact-char-left { width: 100%; }
-    .contact-char-left img { width: 100%; border-radius: 12px; object-fit: cover; max-height: 320px; }
-    .contact-centered {
+    .choose-title {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 32px;
+      letter-spacing: 0.04em;
+    }
+    .choose-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ── WORK CARD — dark theme ──────────────────────────── */
+    #card-work {
+      background: #111111;
+      border-color: #111111;
+    }
+    #card-work .card-head {
+      border-bottom-color: rgba(255,255,255,0.1);
+    }
+    #card-work .card-tag { color: var(--accent); }
+    #card-work .card-title {
+      color: #FFFFFF;
+      font-size: clamp(28px, 5vw, 48px);
+      letter-spacing: -0.02em;
+    }
+    #card-work .card-body {
+      border-bottom-color: rgba(255,255,255,0.1);
+      padding: 0;
+    }
+    #card-work .card-foot { border-top: 1.5px solid rgba(255,255,255,0.1); padding: 24px 32px; }
+    #card-work .btn-primary { background: #FFFFFF; color: #111111; }
+
+    /* ── Contact card — dark like Work ─── */
+    /* ── Diamond card shared styles ────────────────────────── */
+    .diamond-card {
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      aspect-ratio: 1;
+      border-radius: 0;
+      border: none;
+      overflow: hidden;
+      background: var(--border); /* border color — inner div provides white bg */
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 32px;
+      justify-content: center;
       text-align: center;
+      padding: 0;
+      box-shadow: none;
     }
-    .contact-photo {
-      width: clamp(120px, 14vw, 200px);
-      height: clamp(120px, 14vw, 200px);
-      border-radius: 50%;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-    .contact-photo img {
+    /* White inner layer — clips to diamond and is 2px smaller, revealing border color */
+    .diamond-inner {
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      background: var(--card);
+      transform: scale(0.994);
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .diamond-card .card-head {
+      background: transparent;
+      border-bottom: none;
+      padding: 0 0 12px;
+      text-align: center;
+      width: 100%;
+    }
+    .diamond-card .card-tag { color: var(--accent); }
+    .diamond-card .card-title { font-size: 32px; }
+    .diamond-card .choose-body {
+      padding: 0;
+      text-align: center;
+      width: 240px;
+    }
+    .diamond-card .choose-title { margin-bottom: 16px; font-size: 11px; }
+    .diamond-card .choose-btns { flex-direction: column; gap: 10px; align-items: center; }
+
+    #card-choose {
+      width: 680px;
+      height: 680px;
+      max-width: min(680px, 100vw - 180px);
     }
 
-    /* ─── Footer ────────────────────────────────────────────────────── */
-    footer {}
+    #card-next {
+      width: 740px;
+      height: 740px;
+      max-width: min(740px, 100vw - 180px);
+    }
+    #card-next .choose-body { width: 260px; }
 
-    .footer-nav-row {
-      padding: 80px var(--px) 16px;
-      display: flex; gap: 48px;
+    #card-contact {
+      background: #111111;
+      border-color: #111111;
     }
-    .footer-nav-group h4 {
-      font-size: 11px; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 12px;
+    #card-contact .card-head {
+      border-bottom-color: rgba(255,255,255,0.1);
     }
-    .footer-nav-group a {
-      display: block; font-size: 14px; color: var(--text);
-      margin-bottom: 6px; transition: color 0.2s ease;
+    #card-contact .card-tag { color: var(--accent); }
+    #card-contact .card-title { color: #FFFFFF; }
+    #card-contact .contact-label { color: rgba(255,255,255,0.45); }
+    #card-contact .btn-outline {
+      color: #FFFFFF;
+      border-color: rgba(255,255,255,0.3);
     }
-    .footer-nav-group a:hover { color: var(--accent); }
+    #card-contact .btn-outline:hover {
+      border-color: #FFFFFF;
+      background: rgba(255,255,255,0.06);
+    }
+    #card-contact .cl-text {
+      font-size: 14px; line-height: 1.85;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 24px; max-width: 520px;
+    }
+    #card-contact .cl-section-label {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 10px; display: block;
+    }
+    #card-contact .cl-list {
+      list-style: none; margin-bottom: 24px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    #card-contact .cl-list li {
+      font-size: 14px; color: rgba(255,255,255,0.75);
+      line-height: 1.6; padding-left: 14px; position: relative;
+    }
+    #card-contact .cl-list li::before {
+      content: '→'; position: absolute; left: 0; color: var(--accent);
+    }
 
-    .footer-name-row {
-      padding: 0 var(--px) 32px;
-      display: flex; justify-content: space-between; align-items: flex-end;
+    /* ── WORK ACCORDION ──────────────────────────────────── */
+    .work-accordion { display: flex; flex-direction: column; }
+
+    .work-group { border-bottom: 1.5px solid rgba(255,255,255,0.1); }
+    .work-group:last-child { border-bottom: none; }
+
+    /* Group header — the employer row */
+    .work-group-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 32px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--mono);
+      text-align: left;
+      gap: 16px;
     }
-    .footer-name {
-      display: block;
-      font-size: clamp(50px, 10vw, 150px);
+    .wg-left { display: flex; align-items: baseline; gap: 14px; flex: 1; min-width: 0; }
+    .wg-num { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); flex-shrink: 0; }
+    .wg-name { font-size: clamp(22px, 3vw, 36px); font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+    .wg-period { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.04em; flex-shrink: 0; }
+    .wg-toggle { font-size: 22px; font-weight: 400; color: rgba(255,255,255,0.3); flex-shrink: 0; transition: transform .25s, color .2s; line-height: 1; }
+    .work-group-header:hover .wg-name { color: var(--accent); }
+    .work-group-header.open .wg-toggle { transform: rotate(45deg); color: #fff; }
+
+    .work-group-body { overflow: hidden; max-height: 0; transition: max-height .4s ease; }
+    .work-group-body.open { max-height: 3000px; }
+
+    /* Employment expanded — hero + tabs */
+    .work-emp-expanded {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+
+    /* Red hero */
+    .emp-hero {
+      background: var(--accent);
+      padding: 80px 40px 72px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .emp-hero-label {
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 0.88;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      white-space: nowrap;
+      color: rgba(255,255,255,0.65);
     }
-    .footer-name--outline {
-      color: transparent;
-      -webkit-text-stroke: 2px var(--text);
+    .emp-hero-title {
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
     }
-    .footer-char { width: clamp(220px, 30vw, 400px); flex-shrink: 0; }
-    .footer-char img { width: 100%; }
-
-    .footer-bottom {
-      padding: 16px var(--px);
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .footer-copy { font-size: 12px; color: var(--muted); }
-
-    /* ─── Responsive ────────────────────────────────────────────────── */
-    @media (max-width: 1024px) {
-      :root { --px: 48px; }
-      .process-grid { grid-template-columns: 1fr; }
-      #stats { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 0; }
-      .stats-grid .stat-item:nth-child(odd) { border-left: none; padding-left: 0; }
+    .emp-hero-meta {
+      font-size: 10px;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 4px;
     }
 
-    @media (max-width: 768px) {
-      :root { --px: 20px; }
-      #stats { grid-template-columns: 1fr; padding-top: 80px; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 32px 0; }
-      .stats-grid .stat-item:nth-child(odd) { border-left: none; padding-left: 0; }
+    /* Tabs */
+    .emp-tab-nav {
+      display: flex;
+      background: #FFFFFF;
+      border-bottom: 1.5px solid #EDEBE8;
+      padding: 0 32px;
+    }
+    .emp-tab-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #AAAAAA;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 16px 16px 14px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+      margin-bottom: -1px;
+    }
+    .emp-tab-btn:first-child { padding-left: 0; }
+    .emp-tab-btn:hover { color: #111111; }
+    .emp-tab-btn.active { color: #111111; border-bottom-color: var(--accent); }
 
-      .nav-links, .nav-cta { display: none; }
-      .nav-burger { display: flex; }
+    .emp-tab-content {
+      background: #FFFFFF;
+      padding: 28px 32px 36px;
+      display: none;
+    }
+    .emp-tab-content.active { display: block; }
+    .emp-tab-content p {
+      font-size: 14px;
+      color: #666666;
+      line-height: 1.85;
+      margin-bottom: 12px;
+      max-width: 520px;
+    }
+    .emp-tab-content p:last-of-type { margin-bottom: 20px; }
+    .emp-highlights {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .emp-highlight {
+      font-size: 14px;
+      color: #555555;
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.6;
+    }
+    .emp-highlight::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+    .emp-tab-link {
+      font-size: 10px; font-weight: 700; color: #888888; text-decoration: none;
+      border-bottom: 1px solid #CCCCCC; padding-bottom: 1px; display: inline-block;
+      letter-spacing: 0.08em; text-transform: uppercase; margin-top: 20px;
+      transition: color .2s, border-color .2s;
+    }
+    .emp-tab-link:hover { color: var(--accent); border-color: var(--accent); }
+    .emp-footer {
+      background: #FFFFFF;
+      padding: 24px 32px 28px;
+      border-top: 1.5px solid #EDEBE8;
+    }
+    .emp-footer .emp-tab-link { margin-top: 0; }
 
-      .hero-char { height: clamp(80px, 26vw, 180px); }
-      .hero-foot { padding: 0 var(--px) 28px; gap: 20px; }
-      .hero-tagline { font-size: clamp(20px, 5.5vw, 32px); }
+    /* Freelance project list */
+    .work-projects { border-top: 1px solid rgba(255,255,255,0.1); }
 
-      /* collapse sidebar layout on mobile */
-      .sec {
-        grid-template-columns: 1fr;
-        padding: 96px var(--px) 0;
-      }
-      .sec-label { margin-bottom: 24px; }
+    .work-item { border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .work-item:last-child { border-bottom: none; }
 
-      .about-body { grid-template-columns: 1fr; gap: 28px; }
-      .about-photo { width: 100%; aspect-ratio: 1; }
+    /* Each project: big red headline row */
+    .work-item-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 32px 18px 60px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--mono);
+      text-align: left;
+      gap: 16px;
+    }
+    .wi-left { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+    .wi-name {
+      font-size: clamp(20px, 2.8vw, 34px);
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      transition: opacity .2s;
+    }
+    .wi-meta { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
+    .wi-toggle { font-size: 18px; color: rgba(255,255,255,0.3); flex-shrink: 0; transition: transform .25s, color .2s; line-height: 1; align-self: center; }
+    .work-item-header:hover .wi-name { opacity: .7; }
+    .work-item-header.open .wi-toggle { transform: rotate(45deg); color: #fff; }
 
-      .work-scroll { width: 100%; margin-right: 0; }
-      .work-card { flex: 0 0 78vw; }
+    .work-item-body { overflow: hidden; max-height: 0; transition: max-height .5s ease; }
+    .work-item-body.open { max-height: 2000px; }
 
-      .skill-word { font-size: clamp(28px, 8vw, 52px); white-space: normal; line-height: 1; }
-      .skills-body { grid-template-columns: 1fr; gap: 32px; }
-      .skills-panel { grid-template-columns: 1fr; gap: 32px; }
-      .skills-text p { font-size: 15px; margin-bottom: 32px; }
+    .work-item-detail {
+      padding: 0 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .work-item-detail p { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.85; max-width: 520px; }
+    .work-item-link {
+      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7); text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 1px; display: inline-block;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      transition: color .2s, border-color .2s;
+    }
+    .work-item-link:hover { color: var(--accent); border-color: var(--accent); }
 
-      .contact-char { display: none; }
-      #contact.sec {
-        grid-template-columns: 1fr !important;
-        gap: 48px !important;
-      }
-      #contact .contact-char-left { width: 100%; }
-      #contact > div:last-child {
-        display: flex !important;
-        justify-content: flex-start !important;
-        align-items: flex-start !important;
-        align-self: auto !important;
-      }
-      #contact .contact-email { font-size: clamp(22px, 6vw, 36px); }
+    /* ── QUICK PITCH (Path B) ────────────────────────────── */
+    .pitch-head-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .pitch-header {
+      margin-bottom: 28px;
+    }
+    .pitch-intro {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.8;
+      max-width: 480px;
+    }
+    .pitch-timer {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .pitch-section {
+      margin-bottom: 24px;
+    }
+    .pitch-section-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .pitch-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pitch-list li {
+      font-size: 14px;
+      color: var(--muted);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.6;
+    }
+    .pitch-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
 
-      .process-grid { grid-template-columns: 1fr; }
+    /* ── WHAT'S NEXT ─────────────────────────────────────── */
+    .next-body {
+      padding: 48px 32px;
+      text-align: center;
+    }
+    .next-body p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 460px;
+      margin: 0 auto 28px;
+    }
 
-      .footer-name-row { flex-direction: column; gap: 20px; align-items: flex-start; }
-      .footer-char { display: none; }
-      .footer-bottom { flex-direction: column; gap: 4px; text-align: center; }
+    /* ── CONTACT ─────────────────────────────────────────── */
+    /* ── PERSONAL ────────────────────────────────────────── */
+    .personal-hobbies {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1.5px solid var(--border);
+    }
+    .personal-hobbies-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 14px;
+    }
+    .personal-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .personal-list li {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .contact-body {
+      padding: 48px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 24px;
+    }
+    .contact-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .contact-email-link {
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 2px solid var(--text);
+      padding-bottom: 2px;
+      letter-spacing: -0.02em;
+      transition: color .2s, border-color .2s;
+    }
+    .contact-email-link:hover { color: var(--accent); border-color: var(--accent); }
+    .contact-links {
+      display: flex;
+      gap: 16px;
+    }
+    .contact-link {
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1px;
+      transition: color .2s;
+    }
+    .contact-link:hover { color: var(--accent); }
+
+    /* ── PROCESS MAP ─────────────────────────────────────── */
+    #process-map {
+      position: fixed;
+      left: 20px;
+      top: auto;
+      bottom: 56px;
+      transform: none;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 10px 14px;
+      z-index: 10;
+      width: 156px;
+    }
+    .pm-header {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    #process-map svg {
+      width: 136px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      overflow: visible;
+    }
+    /* Node shapes — default (inactive) */
+    .pm-node circle,
+    .pm-node ellipse,
+    .pm-node rect,
+    .pm-node polygon {
+      fill: var(--bg);
+      stroke: var(--border);
+      stroke-width: 1.5;
+      transition: fill .3s, stroke .3s, opacity .2s;
+    }
+    .pm-node.done, .pm-node.active, .pm-node.reachable { cursor: pointer; }
+    .pm-node.done:hover circle, .pm-node.done:hover ellipse,
+    .pm-node.done:hover rect, .pm-node.done:hover polygon { opacity: 0.7; }
+    .pm-node text {
+      fill: var(--muted);
+      font-family: var(--mono);
+      font-size: 6px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: fill .3s;
+      pointer-events: none;
+    }
+    /* Active — solid fill, no opacity animation */
+    .pm-node.active circle,
+    .pm-node.active ellipse,
+    .pm-node.active rect,
+    .pm-node.active polygon { fill: var(--accent); stroke: var(--accent); }
+    .pm-node.active text { fill: #fff; }
+    /* Radar ring */
+    @keyframes pm-radar {
+      0%   { opacity: 0.7; stroke-width: 1.5; }
+      100% { opacity: 0;   stroke-width: 14; }
+    }
+    .pm-ring {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.5;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .pm-node.active .pm-ring {
+      animation: pm-radar 1.6s ease-out infinite;
+    }
+    .pm-node.done .pm-ring,
+    .pm-node:not(.active) .pm-ring {
+      animation: none !important;
+      opacity: 0 !important;
+    }
+    /* Reachable — subtle red border */
+    .pm-node.reachable circle,
+    .pm-node.reachable ellipse,
+    .pm-node.reachable rect,
+    .pm-node.reachable polygon { stroke: var(--accent); stroke-opacity: 0.4; }
+    /* Done */
+    .pm-node.done circle,
+    .pm-node.done ellipse,
+    .pm-node.done rect,
+    .pm-node.done polygon { fill: var(--text); stroke: var(--text); }
+    .pm-node.done text { fill: #fff; }
+    /* Connector lines */
+    .pm-lines line, .pm-lines path { stroke: var(--border); stroke-width: 1.5; transition: stroke .4s; fill: none; }
+    .pm-lines line.pm-active, .pm-lines path.pm-active { stroke: var(--accent); }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    .footer-end {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      z-index: 10;
+    }
+    .footer-copy {
+      display: block;
+      max-width: calc(var(--card-w) + 80px);
+      margin: 0 auto;
+      padding: 12px 40px;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .footer-copy {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .footer-nav {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-nav a {
+      font-size: 10px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+    .footer-nav a:hover { color: var(--text); }
+
+    /* ── HIDDEN ──────────────────────────────────────────── */
+    .hidden { display: none !important; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      #process-map { display: none; }
+      nav { padding: 20px 24px; }
+      .feed { padding: 0 24px 80px; }
+      .footer-end { padding: 0 24px 40px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(3) { border-left: none; padding-left: 0; border-top: 1.5px solid var(--border); padding-top: 20px; }
+      .stat-item:nth-child(4) { border-top: 1.5px solid var(--border); padding-top: 20px; }
+    }
+    @media (max-width: 600px) {
+      .about-layout { grid-template-columns: 1fr; }
+      .about-photo { min-height: 240px; aspect-ratio: 4/3; }
+      .choose-btns { flex-direction: column; width: 100%; }
+      .choose-btns .btn { text-align: center; }
+    }
+    @media (max-width: 600px) {
+      .card-title { font-size: 28px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .choose-btns { flex-direction: column; width: 100%; }
+      .choose-btns .btn { text-align: center; }
+    }
+
+    /* ── CASE STUDY DIALOG ──────────────────────────────────── */
+    .cs-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(17,17,17,0.7);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 20px 40px;
+      overflow-y: auto;
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s;
+    }
+    .cs-overlay.open { opacity: 1; pointer-events: all; }
+
+    .cs-panel {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      width: 100%; max-width: 720px;
+      position: relative;
+      overflow: hidden;
+      transform: translateY(24px);
+      transition: transform .3s;
+      flex-shrink: 0;
+    }
+    .cs-overlay.open .cs-panel { transform: translateY(0); }
+
+    .cs-close {
+      position: absolute; top: 18px; right: 20px;
+      background: rgba(17,17,17,0.08); border: none; border-radius: 50%;
+      width: 36px; height: 36px; font-size: 20px; line-height: 1;
+      cursor: pointer; color: var(--text); z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .cs-close:hover { background: rgba(17,17,17,0.15); }
+
+    /* Cover image */
+    .cs-cover { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: var(--bg); }
+    .cs-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cs-cover-text {
+      width: 100%; aspect-ratio: 16/9;
+      background: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: clamp(28px, 5vw, 48px);
+      font-weight: 700; letter-spacing: -0.03em;
+    }
+
+    /* Content */
+    .cs-body { padding: 36px 40px 40px; }
+
+    .cs-project-meta {
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .cs-title {
+      font-size: clamp(28px, 4vw, 40px); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 20px;
+    }
+    .cs-info-row {
+      display: flex; gap: 32px; flex-wrap: wrap;
+      padding: 18px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .cs-info-item { display: flex; flex-direction: column; gap: 4px; }
+    .cs-info-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .cs-info-value { font-size: 11px; font-weight: 700; }
+    .cs-info-link { font-size: 11px; font-weight: 700; color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
+    .cs-info-link:hover { opacity: 0.75; }
+
+    .cs-section { margin-bottom: 28px; }
+    .cs-section-label {
+      font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .cs-section p {
+      font-size: 12px; line-height: 1.85; color: var(--text); margin-bottom: 8px;
+    }
+
+    .cs-deliverables { display: flex; flex-direction: column; gap: 14px; }
+    .cs-deliverable {
+      display: grid; grid-template-columns: 28px 1fr; gap: 0 12px;
+      padding: 14px; background: var(--bg); border-radius: 10px;
+    }
+    .cs-del-num {
+      font-size: 9px; letter-spacing: 0.1em; color: var(--muted);
+      padding-top: 2px; grid-row: span 2;
+    }
+    .cs-del-title { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+    .cs-del-desc { font-size: 11px; color: var(--muted); line-height: 1.7; }
+
+    .cs-impact-list {
+      list-style: none; display: flex; flex-direction: column; gap: 8px;
+    }
+    .cs-impact-list li {
+      font-size: 12px; color: var(--text); line-height: 1.6;
+      padding-left: 16px; position: relative;
+    }
+    .cs-impact-list li::before {
+      content: '→'; position: absolute; left: 0; color: var(--accent);
+    }
+
+    .cs-live-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 8px; padding: 12px 20px;
+      background: var(--text); color: #fff;
+      border-radius: 8px; text-decoration: none;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      transition: opacity .15s;
+    }
+    .cs-live-btn:hover { opacity: 0.8; }
+
+    @media (max-width: 600px) {
+      .cs-body { padding: 24px 20px 28px; }
+      .cs-info-row { gap: 16px; }
+      .cs-overlay { padding: 0; align-items: flex-end; }
+      .cs-panel { border-radius: 20px 20px 0 0; max-width: 100%; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Loader -->
-  <div id="loader">
-    <div class="loader-icon-wrap">
-      <img src="assets/character-main.svg" class="loader-icon" id="loaderIcon" alt="">
+<!-- ── PROCESS MAP ──────────────────────────────────────── -->
+<aside id="process-map" aria-label="Progress map">
+  <div class="pm-header">UX Flow</div>
+  <svg viewBox="0 0 136 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- Lines first -->
+    <g class="pm-lines">
+      <line id="pm-line-start-about"    x1="60" y1="26"  x2="60" y2="37"/>
+      <line id="pm-line-about-choose"   x1="60" y1="55"  x2="60" y2="66"/>
+      <line id="pm-line-choose-work"    x1="48" y1="78"  x2="27" y2="102"/>
+      <line id="pm-line-choose-pitch"   x1="72" y1="78"  x2="93" y2="102"/>
+      <line id="pm-line-pitch-work"     x1="70" y1="111" x2="50" y2="111"/>
+      <line id="pm-line-work-next"      x1="27" y1="120" x2="48" y2="145"/>
+      <path id="pm-line-pitch-contact"  d="M 116,111 L 130,111 L 130,208 L 72,208"/>
+      <line id="pm-line-next-personal"  x1="48" y1="145" x2="27" y2="170"/>
+      <line id="pm-line-next-want"      x1="72" y1="145" x2="93" y2="170"/>
+      <line id="pm-line-next-contact"   x1="60" y1="157" x2="60" y2="197"/>
+      <line id="pm-line-want-contact"     x1="93" y1="188" x2="71" y2="208"/>
+      <line id="pm-line-personal-contact" x1="27" y1="188" x2="49" y2="208"/>
+    </g>
+
+    <!-- CONTACT circle -->
+    <g id="pm-contact" class="pm-node" onclick="pmNodeClick('pm-contact')">
+      <circle cx="60" cy="208" r="11"/>
+      <circle class="pm-ring" cx="60" cy="208" r="11"/>
+    </g>
+
+    <!-- PERSONAL rect -->
+    <g id="pm-personal" class="pm-node" onclick="pmNodeClick('pm-personal')">
+      <rect x="4" y="170" width="46" height="18" rx="3"/>
+      <rect class="pm-ring" x="4" y="170" width="46" height="18" rx="3"/>
+    </g>
+
+    <!-- WANT rect -->
+    <g id="pm-want" class="pm-node" onclick="pmNodeClick('pm-want')">
+      <rect x="70" y="170" width="46" height="18" rx="3"/>
+      <rect class="pm-ring" x="70" y="170" width="46" height="18" rx="3"/>
+    </g>
+
+    <!-- NEXT diamond -->
+    <g id="pm-next" class="pm-node" onclick="pmNodeClick('pm-next')">
+      <polygon points="60,133 72,145 60,157 48,145"/>
+      <polygon class="pm-ring" points="60,133 72,145 60,157 48,145"/>
+    </g>
+
+    <!-- PITCH rect -->
+    <g id="pm-pitch" class="pm-node" onclick="pmNodeClick('pm-pitch')">
+      <rect x="70" y="102" width="46" height="18" rx="3"/>
+      <rect class="pm-ring" x="70" y="102" width="46" height="18" rx="3"/>
+    </g>
+
+    <!-- WORK rect -->
+    <g id="pm-work" class="pm-node" onclick="pmNodeClick('pm-work')">
+      <rect x="4" y="102" width="46" height="18" rx="3"/>
+      <rect class="pm-ring" x="4" y="102" width="46" height="18" rx="3"/>
+    </g>
+
+    <!-- CHOOSE diamond -->
+    <g id="pm-choose" class="pm-node" onclick="pmNodeClick('pm-choose')">
+      <polygon points="60,66 72,78 60,90 48,78"/>
+      <polygon class="pm-ring" points="60,66 72,78 60,90 48,78"/>
+    </g>
+
+    <!-- ABOUT rect -->
+    <g id="pm-about" class="pm-node" onclick="pmNodeClick('pm-about')">
+      <rect x="30" y="37" width="60" height="18" rx="3"/>
+      <rect class="pm-ring" x="30" y="37" width="60" height="18" rx="3"/>
+    </g>
+
+    <!-- START circle -->
+    <g id="pm-start" class="pm-node active" onclick="pmNodeClick('pm-start')">
+      <circle cx="60" cy="15" r="11"/>
+      <circle class="pm-ring" cx="60" cy="15" r="11"/>
+    </g>
+
+  </svg>
+</aside>
+
+<!-- ── NAV ──────────────────────────────────────────────── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="assets/character-main.svg" alt="">
+    <span class="nav-logo-name">Michal Podskoč</span>
+  </a>
+</nav>
+
+<!-- ── FEED ─────────────────────────────────────────────── -->
+<main class="feed">
+
+  <!-- ── 01 · HELLO ──────────────────────────────────────── -->
+  <div class="card visible" id="card-hello">
+    <div class="card-head">
+      <span class="card-tag">▷ portfolio.start()</span>
+      <h1 class="card-title">Hi.</h1>
+    </div>
+    <div class="card-body">
+      <p>This is my portfolio. Take a look at what I design, where I've worked, and what I'm looking for in my next role.</p>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-num">6</div>
+          <div class="stat-desc">years of<br>design</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">3+</div>
+          <div class="stat-desc">industries —<br>Fintech · Mobility · HR</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">15+</div>
+          <div class="stat-desc">products shipped<br>end-to-end</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">∞</div>
+          <div class="stat-desc">design system<br>components contributed</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-foot">
+      <button class="btn btn-primary" onclick="reveal('card-about', 'pm-about', 'pm-start')">Continue →</button>
     </div>
   </div>
 
-  <!-- Mobile nav overlay -->
-  <div id="nav-mobile">
-    <ul class="nav-mobile-links">
-      <li><a href="#work"    class="m-link">Work</a></li>
-      <li><a href="#about"   class="m-link">About</a></li>
-      <li><a href="#process" class="m-link">Process</a></li>
-      <li><a href="#contact" class="m-link">Contact</a></li>
-    </ul>
-  </div>
+  <div class="connector hidden" id="conn-about"></div>
 
-  <!-- ── Nav ──────────────────────────────────────────────────────── -->
-  <nav id="nav">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo">Michal Podskoč</a>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#work">Work</a></li>
-        <li><a href="#process">Process</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-      <a href="mailto:michal.podskoc@gmail.com" class="nav-cta">michal.podskoc@gmail.com</a>
-      <button class="nav-burger" id="burger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+  <!-- ── 02 · ABOUT ME ───────────────────────────────────── -->
+  <div class="card hidden" id="card-about">
+    <div class="card-head">
+      <span class="card-tag">about_me</span>
+      <h2 class="card-title">Who I am</h2>
     </div>
-  </nav>
-
-  <!-- ── Hero ─────────────────────────────────────────────────────── -->
-  <section id="hero">
-    <div class="hero-body">
-      <div class="hero-name-block reveal">
-        <span class="hero-name"><span class="hero-name-line">MICHAL</span><span class="hero-name-line">PODSKOČ</span></span>
-      </div>
-      <div class="hero-chars reveal" style="transition-delay:0.12s">
-        <img src="assets/character-main.svg" class="hero-char" alt="">
-        <img src="assets/character-alt.svg"  class="hero-char" alt="">
-        <img src="assets/character-main.svg" class="hero-char" alt="">
-      </div>
-    </div>
-    <div class="hero-foot reveal" style="transition-delay:0.22s">
-      <div>
-        <p class="hero-tagline">I make the world more beautiful.<br>At least the digital one.</p>
-        <a href="#work" class="hero-cta-link">See my work</a>
-      </div>
-      <a href="#about" class="hero-arrow">↓</a>
-    </div>
-  </section>
-
-  <!-- ── Stats ────────────────────────────────────────────────────── -->
-  <div id="stats" class="reveal">
-    <span class="sec-label">In numbers</span>
-    <div class="stats-grid">
-      <div class="stat-item">
-        <p class="stat-number">5+</p>
-        <p class="stat-desc">Years of design<br>from print to UX</p>
-      </div>
-      <div class="stat-item">
-        <p class="stat-number">15+</p>
-        <p class="stat-desc">Products shipped<br>end-to-end</p>
-      </div>
-      <div class="stat-item">
-        <p class="stat-number">10+</p>
-        <p class="stat-desc">Industries<br>fintech · mobility · HR</p>
-      </div>
-      <div class="stat-item">
-        <p class="stat-number">∞</p>
-        <p class="stat-desc">Design system<br>components contributed</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── Statement headline ───────────────────────────────────────── -->
-  <section class="sec reveal">
-    <span class="sec-hl-arrow">→</span>
-    <h2 class="about-hl">I turn complex UX problems into clean, scalable interfaces that teams can actually build.</h2>
-  </section>
-
-  <!-- ── About ─────────────────────────────────────────────────────── -->
-  <section id="about" class="sec reveal">
-    <span class="sec-label">About</span>
-    <div>
-      <div class="about-body">
+    <div class="card-body">
+      <div class="about-layout">
+        <div class="about-text-col">
+          <p>My name is Michal Podskoč. UX/UI designer with six years of experience designing digital products in fintech and mobility.</p>
+          <p>Studied marketing communication in Nitra, worked at Sygic as UX/UI Designer, and today I design products at Slovenská sporiteľňa.</p>
+          <p>I enjoy talking to users, understanding their needs, and turning insights into clear and meaningful design. I believe in simple experiences that feel natural — with a small touch of humor when it fits.</p>
+          <div class="about-tools">
+            <span class="tool-badge">Figma</span>
+            <span class="tool-badge">Tokens Studio</span>
+            <span class="tool-badge">FigJam</span>
+            <span class="tool-badge">UX Research</span>
+            <span class="tool-badge">Design Systems</span>
+            <span class="tool-badge">Developer Handoff</span>
+          </div>
+        </div>
         <div class="about-photo">
           <img src="assets/photo.jpg" alt="Michal Podskoč">
         </div>
-        <div class="about-text">
-          <p class="about-intro">My name is Michal Podskoč and I am a UX/UI designer with five years of experience.</p>
-          <p>Studied marketing communication and advertising in Nitra, worked at Sygic, and today I design digital products at Slovenská sporiteľňa.</p>
-          <p>I enjoy talking to users, understanding their needs, and turning insights into clear and meaningful design. I love the moment when scattered ideas start forming a structure and a concept becomes a usable interface that actually makes sense.</p>
-          <p>What I enjoy most is creating something people can understand instantly, without explanation. I believe in clear and simple digital experiences that feel natural to use, with a small touch of humor when it fits.</p>
-          <div class="about-tools">
-            <span class="about-badge">Figma</span>
-            <span class="about-badge">Tokens Studio</span>
-            <span class="about-badge">FigJam</span>
-            <span class="about-badge">Principle</span>
-            <span class="about-badge">UX research</span>
-            <span class="about-badge">Design systems</span>
-            <span class="about-badge">Developer handoff</span>
-          </div>
-          <a href="#contact" class="link-underline">→ &nbsp;Get in touch</a>
+      </div>
+    </div>
+    <div class="card-foot">
+      <button class="btn btn-primary" onclick="reveal('card-choose', 'pm-choose', 'pm-about')">Continue →</button>
+    </div>
+  </div>
+
+  <div class="connector hidden" id="conn-choose"></div>
+
+  <!-- ── 03 · CHOOSE PATH ─────────────────────────────────── -->
+  <div class="card diamond-card hidden" id="card-choose">
+    <div class="diamond-inner">
+      <div class="card-head">
+        <h2 class="card-title">Choose path</h2>
+      </div>
+      <div class="choose-body">
+        <p class="choose-title">How do you want to continue?</p>
+        <div class="choose-btns">
+          <button class="btn btn-primary" onclick="choosePath('a')">I want to see your work →</button>
+          <button class="btn btn-outline" onclick="choosePath('b')">I have 30 seconds ⏱</button>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
+  <div class="connector hidden" id="conn-pitch"></div>
 
-  <!-- ── Work ──────────────────────────────────────────────────────── -->
-  <section id="work" class="sec reveal">
-    <span class="sec-label">Work</span>
-    <div>
+  <!-- ── 04B · QUICK PITCH ────────────────────────────────── -->
+  <div class="card hidden" id="card-pitch">
+    <div class="card-head">
+      <span class="card-tag">quick_pitch</span>
+      <div class="pitch-head-row">
+        <h2 class="card-title">30 seconds</h2>
+        <span class="pitch-timer" id="pitch-timer">0:30</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pitch-section">
+        <div class="pitch-section-label">Who I am</div>
+        <p class="pitch-intro">UX/UI designer based in Slovakia. I work full-time at Slovenská sporiteľňa designing financial products — and take on freelance projects on the side, because different problems keep me sharp.</p>
+      </div>
 
-      <!-- carousel — bleeds to right viewport edge (no right padding = signals scrollability) -->
-      <div class="work-scroll" id="workScroll">
-        <a href="work/portfolio.html" class="work-card">
-          <div class="work-card-thumb work-card-thumb--logo" style="background:#F2F0EC;">
-            <img src="assets/character-main.svg" alt="Personal Portfolio" style="padding:96px;">
-            <div class="work-card-overlay"><span>View project</span></div>
-          </div>
-          <div class="work-card-info">
-            <div>
-              <p class="work-card-title">Personal Portfolio — Case Study Page</p>
-              <p class="work-card-meta">UX Design · UI Design · Design to Code · 2026</p>
+      <div class="pitch-section">
+        <div class="pitch-section-label">What I do</div>
+        <ul class="pitch-list">
+          <li>End-to-end product design — from research to shipped UI</li>
+          <li>Design systems built to scale, not just to look good</li>
+          <li>Collaboration with devs — I care how things are actually built</li>
+        </ul>
+      </div>
+
+      <div class="pitch-section">
+        <div class="pitch-section-label">What I've shipped</div>
+        <ul class="pitch-list">
+          <li>Talendly — HR platform designed end-to-end over 6 months</li>
+          <li>Svet Dverí — full design system + brand identity from scratch</li>
+          <li>Daily banking features used by thousands at SLSP</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card-foot">
+      <button class="btn btn-primary" onclick="showWorkFromPitch()">I have more time →</button>
+      <button class="btn btn-outline" onclick="showContact('pm-pitch')">Contact me</button>
+    </div>
+  </div>
+
+  <div class="connector hidden" id="conn-work"></div>
+
+  <!-- ── 04A · WORK ───────────────────────────────────────── -->
+  <div class="card hidden" id="card-work">
+    <div class="card-head">
+      <span class="card-tag">selected_projects</span>
+      <h2 class="card-title">My work</h2>
+    </div>
+    <div class="card-body">
+      <div class="work-accordion">
+
+        <!-- ── FREELANCE ────────────────── -->
+        <div class="work-group">
+          <button class="work-group-header" onclick="toggleGroup(this)">
+            <div class="wg-left">
+              <span class="wg-num">01</span>
+              <span class="wg-name">Freelance</span>
+              <span class="wg-period">2025 – present</span>
             </div>
-            <span class="work-card-arrow">↗</span>
-          </div>
-        </a>
+            <span class="wg-toggle">+</span>
+          </button>
+          <div class="work-group-body">
+            <div class="work-projects">
 
-        <a href="work/svetdveri.html" class="work-card">
-          <div class="work-card-thumb work-card-thumb--logo">
-            <img src="assets/svetdveri-logo.svg" alt="Svet Dverí">
-            <div class="work-card-overlay"><span>View project</span></div>
-          </div>
-          <div class="work-card-info">
-            <div>
-              <p class="work-card-title">Svet Dverí</p>
-              <p class="work-card-meta">UI Design · Design System · 2026</p>
+
+              <!-- ── Svet Dverí ── -->
+              <div class="work-item">
+                <button class="work-item-header" onclick="toggleItem(this)">
+                  <div class="wi-left">
+                    <span class="wi-name">Svet Dverí</span>
+                    <span class="wi-meta">UI Design · Design System · 2026</span>
+                  </div>
+                  <span class="wi-toggle">+</span>
+                </button>
+                <div class="work-item-body">
+                  <div class="work-emp-expanded">
+                    <div class="emp-hero">
+                      <span class="emp-hero-label">01 · Freelance · 2026</span>
+                      <div class="emp-hero-title">Svet Dverí</div>
+                      <div class="emp-hero-meta">UI Design · Design System · 2026</div>
+                    </div>
+                    <div class="emp-tab-nav">
+                      <button class="emp-tab-btn active" onclick="switchTab(this, 'sd-ui')">UI Design</button>
+                      <button class="emp-tab-btn" onclick="switchTab(this, 'sd-ds')">Design System</button>
+                      <button class="emp-tab-btn" onclick="switchTab(this, 'sd-outcome')">Outcome</button>
+                    </div>
+                    <div class="emp-tab-content active" id="sd-ui">
+                      <p>Redesigned the UI for a Slovak door configurator — clean product pages, configurator interface, and a consistent visual language across the entire product.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">Product configurator UI — step-by-step door selection flow</div>
+                        <div class="emp-highlight">Homepage, product listing, and detail pages</div>
+                        <div class="emp-highlight">Mobile-first responsive design</div>
+                        <div class="emp-highlight">Visual language aligned with brand identity</div>
+                      </div>
+                    </div>
+                    <div class="emp-tab-content" id="sd-ds">
+                      <p>Built a complete design system from scratch in Figma — component library, token structure, and developer handoff documentation for a live production product.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">Atomic component library in Figma</div>
+                        <div class="emp-highlight">Color, typography, and spacing token structure</div>
+                        <div class="emp-highlight">Handoff documentation for developers</div>
+                        <div class="emp-highlight">System covers configurator, e-shop, and CMS views</div>
+                      </div>
+                    </div>
+                    <div class="emp-tab-content" id="sd-outcome">
+                      <p>Delivered a production-ready design system and UI used by the client's development team to ship the live product.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">Live product shipped using the delivered system</div>
+                        <div class="emp-highlight">Reduced design-to-dev handoff friction significantly</div>
+                        <div class="emp-highlight">Client team independently extends components</div>
+                      </div>
+                    </div>
+                    <div class="emp-footer">
+                      <a href="https://konfigurator.svetdveri.sk/" target="_blank" rel="noopener" class="emp-tab-link">konfigurator.svetdveri.sk ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── Talendly ── -->
+              <div class="work-item">
+                <button class="work-item-header" onclick="toggleItem(this)">
+                  <div class="wi-left">
+                    <span class="wi-name">Talendly</span>
+                    <span class="wi-meta">Design System · UX/UI · 2025–2026</span>
+                  </div>
+                  <span class="wi-toggle">+</span>
+                </button>
+                <div class="work-item-body">
+                  <div class="work-emp-expanded">
+                    <div class="emp-hero">
+                      <span class="emp-hero-label">01 · Freelance · 2025–2026</span>
+                      <div class="emp-hero-title">Talendly</div>
+                      <div class="emp-hero-meta">Design System · UX/UI · 2025–2026</div>
+                    </div>
+                    <div class="emp-tab-nav">
+                      <button class="emp-tab-btn active" onclick="switchTab(this, 'tal-ux')">UX Design</button>
+                      <button class="emp-tab-btn" onclick="switchTab(this, 'tal-ui')">UI Design</button>
+                      <button class="emp-tab-btn" onclick="switchTab(this, 'tal-ds')">Design System</button>
+                    </div>
+                    <div class="emp-tab-content active" id="tal-ux">
+                      <p>UX consulting and concept work for an HR platform connecting companies with freelance talent — translating product ideas into early UX screens and flows to show how things could work.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">UX consulting — advising on structure, flows, and user logic</div>
+                        <div class="emp-highlight">Draft screens showing how key flows could look and feel</div>
+                        <div class="emp-highlight">Mapping out job posting, matching, and hiring flows</div>
+                        <div class="emp-highlight">Early onboarding concepts for both companies and freelancers</div>
+                      </div>
+                    </div>
+                    <div class="emp-tab-content" id="tal-ui">
+                      <p>Designed a clean, professional UI for the platform — dashboard, job cards, candidate profiles, and a messaging interface.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">Dashboard and job listing UI</div>
+                        <div class="emp-highlight">Candidate profile and portfolio view</div>
+                        <div class="emp-highlight">Messaging and contract management interface</div>
+                        <div class="emp-highlight">Light/dark mode support</div>
+                      </div>
+                    </div>
+                    <div class="emp-tab-content" id="tal-ds">
+                      <p>Built a scalable design system in Figma using Tokens Studio — multi-brand ready, with clear documentation and developer-friendly structure.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">Tokens Studio integration for design tokens</div>
+                        <div class="emp-highlight">Multi-brand theme support</div>
+                        <div class="emp-highlight">Full component library with variants and states</div>
+                        <div class="emp-highlight">Dev documentation and handoff spec</div>
+                      </div>
+                    </div>
+                    <div class="emp-footer">
+                      <a href="https://www.talendly.sk/" target="_blank" rel="noopener" class="emp-tab-link">talendly.sk ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── NDA Project 02 ── -->
+              <div class="work-item">
+                <button class="work-item-header" onclick="toggleItem(this)">
+                  <div class="wi-left">
+                    <span class="wi-name">NDA Project 02</span>
+                    <span class="wi-meta">UI Design · Design System · 2025</span>
+                  </div>
+                  <span class="wi-toggle">+</span>
+                </button>
+                <div class="work-item-body">
+                  <div class="work-emp-expanded">
+                    <div class="emp-hero">
+                      <span class="emp-hero-label">01 · Freelance · 2025 · Confidential</span>
+                      <div class="emp-hero-title">NDA Project 02</div>
+                      <div class="emp-hero-meta">UI Design · Design System · 2025</div>
+                    </div>
+                    <div class="emp-tab-nav">
+                      <button class="emp-tab-btn active" onclick="switchTab(this, 'nda2-overview')">Overview</button>
+                      <button class="emp-tab-btn" onclick="switchTab(this, 'nda2-ui')">UI Design</button>
+                      <button class="emp-tab-btn" onclick="switchTab(this, 'nda2-ds')">Design System</button>
+                    </div>
+                    <div class="emp-tab-content active" id="nda2-overview">
+                      <p>Confidential freelance project. Full details available upon request under NDA. The work covered UI design and design system for a product in the digital services space.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">UI design for a web-based digital product</div>
+                        <div class="emp-highlight">Design system built in Figma</div>
+                        <div class="emp-highlight">Delivered under NDA — details on request</div>
+                      </div>
+                    </div>
+                    <div class="emp-tab-content" id="nda2-ui">
+                      <p>UI design covering key screens, interaction states, and a coherent visual language — confidential details available on request.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">Screen designs for core product flows</div>
+                        <div class="emp-highlight">Interaction states and edge cases covered</div>
+                        <div class="emp-highlight">Responsive breakpoints for web and mobile</div>
+                      </div>
+                    </div>
+                    <div class="emp-tab-content" id="nda2-ds">
+                      <p>Scalable design system delivered alongside the UI — component library, token structure, and usage documentation.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">Component library with variants and states</div>
+                        <div class="emp-highlight">Color and typography token structure</div>
+                        <div class="emp-highlight">Developer handoff documentation</div>
+                      </div>
+                    </div>
+                    <div class="emp-footer">
+                      <span class="emp-tab-link" style="opacity:0.35;cursor:default;">NDA — not public</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── NDA Project 01 ── -->
+              <div class="work-item">
+                <button class="work-item-header" onclick="toggleItem(this)">
+                  <div class="wi-left">
+                    <span class="wi-name">NDA Project 01</span>
+                    <span class="wi-meta">UI Design · Component Library</span>
+                  </div>
+                  <span class="wi-toggle">+</span>
+                </button>
+                <div class="work-item-body">
+                  <div class="work-emp-expanded">
+                    <div class="emp-hero">
+                      <span class="emp-hero-label">01 · Freelance · Confidential</span>
+                      <div class="emp-hero-title">NDA Project 01</div>
+                      <div class="emp-hero-meta">UI Design · Component Library</div>
+                    </div>
+                    <div class="emp-tab-nav">
+                      <button class="emp-tab-btn active" onclick="switchTab(this, 'nda1-overview')">Overview</button>
+                      <button class="emp-tab-btn" onclick="switchTab(this, 'nda1-ui')">UI Design</button>
+                      <button class="emp-tab-btn" onclick="switchTab(this, 'nda1-comp')">Components</button>
+                    </div>
+                    <div class="emp-tab-content active" id="nda1-overview">
+                      <p>Confidential freelance project. Full details available upon request under NDA. Work focused on UI design and a reusable component library for a client product.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">UI design for a client product</div>
+                        <div class="emp-highlight">Reusable component library in Figma</div>
+                        <div class="emp-highlight">Delivered under NDA — details on request</div>
+                      </div>
+                    </div>
+                    <div class="emp-tab-content" id="nda1-ui">
+                      <p>UI design for core product screens — visual language, layout system, and interaction patterns. Confidential details available on request.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">Screen designs for key product flows</div>
+                        <div class="emp-highlight">Consistent visual language throughout</div>
+                        <div class="emp-highlight">Responsive design for web and mobile</div>
+                      </div>
+                    </div>
+                    <div class="emp-tab-content" id="nda1-comp">
+                      <p>A full component library built in Figma — covering atoms, molecules, and organisms with proper variant and state management.</p>
+                      <div class="emp-highlights">
+                        <div class="emp-highlight">Atomic design methodology</div>
+                        <div class="emp-highlight">Variants and interactive states for all components</div>
+                        <div class="emp-highlight">Developer-ready handoff with annotations</div>
+                      </div>
+                    </div>
+                    <div class="emp-footer">
+                      <span class="emp-tab-link" style="opacity:0.35;cursor:default;">NDA — not public</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
-            <span class="work-card-arrow">↗</span>
           </div>
-        </a>
+        </div>
 
-        <a href="work/talendly.html" class="work-card">
-          <div class="work-card-thumb work-card-thumb--logo">
-            <img src="assets/Talendly-logo.png" alt="Talendly">
-            <div class="work-card-overlay"><span>View project</span></div>
-          </div>
-          <div class="work-card-info">
-            <div>
-              <p class="work-card-title">Talendly</p>
-              <p class="work-card-meta">Design System · UX/UI · 2025–2026</p>
+        <!-- ── SLOVENSKÁ SPORITEĽŇA ───── -->
+        <div class="work-group">
+          <button class="work-group-header" onclick="toggleGroup(this)">
+            <div class="wg-left">
+              <span class="wg-num">02</span>
+              <span class="wg-name">Slovenská sporiteľňa</span>
+              <span class="wg-period">2023 – present</span>
             </div>
-            <span class="work-card-arrow">↗</span>
-          </div>
-        </a>
-
-        <a href="work/nda-2.html" class="work-card">
-          <div class="work-card-thumb work-card-thumb--logo">
-            <img src="assets/BadgeNDA.png" alt="NDA Project 02" style="padding:80px;">
-            <div class="work-card-overlay"><span>View project</span></div>
-          </div>
-          <div class="work-card-info">
-            <div>
-              <p class="work-card-title">NDA Project 02</p>
-              <p class="work-card-meta">UI Design · Design System · 2025</p>
+            <span class="wg-toggle">+</span>
+          </button>
+          <div class="work-group-body">
+            <div class="work-emp-expanded">
+              <!-- Red hero -->
+              <div class="emp-hero">
+                <span class="emp-hero-label">02 · Employment · Bratislava</span>
+                <div class="emp-hero-title">UX/UI Designer<br>@ Slovenská sporiteľňa</div>
+                <div class="emp-hero-meta">Slovenská sporiteľňa · Bratislava · 2023 – present</div>
+              </div>
+              <!-- Tabs nav -->
+              <div class="emp-tab-nav">
+                <button class="emp-tab-btn active" onclick="switchTab(this, 'slsp-ui')">UI Design</button>
+                <button class="emp-tab-btn" onclick="switchTab(this, 'slsp-ux')">UX Design</button>
+                <button class="emp-tab-btn" onclick="switchTab(this, 'slsp-ds')">Design System</button>
+              </div>
+              <!-- Tab: UI Design -->
+              <div class="emp-tab-content active" id="slsp-ui">
+                <p>Designing pixel-precise UI for retail banking apps and internal tools used by millions of customers and hundreds of employees across Slovakia.</p>
+                <div class="emp-highlights">
+                  <div class="emp-highlight">Retail mobile banking — redesigned core flows (payments, cards, loans)</div>
+                  <div class="emp-highlight">Internal back-office tools for branch employees</div>
+                  <div class="emp-highlight">Onboarding flows for new banking products</div>
+                  <div class="emp-highlight">Interactive prototypes for stakeholder presentations</div>
+                </div>
+              </div>
+              <!-- Tab: UX Design -->
+              <div class="emp-tab-content" id="slsp-ux">
+                <p>Designing end-to-end user flows and interaction logic for retail banking products. Working closely with product managers, engineers, and business stakeholders to translate requirements into clear, usable experiences.</p>
+                <div class="emp-highlights">
+                  <div class="emp-highlight">Defining information architecture for new product areas</div>
+                  <div class="emp-highlight">Creating user flows, wireframes, and low-fi concepts</div>
+                  <div class="emp-highlight">Interactive prototypes for stakeholder alignment and dev handoff</div>
+                  <div class="emp-highlight">Collaborating with PMs and engineers throughout the design process</div>
+                </div>
+              </div>
+              <!-- Tab: Design System -->
+              <div class="emp-tab-content" id="slsp-ds">
+                <p>Contributing to the bank-wide design system — not leading it, but actively helping shape it. Adding components, flagging inconsistencies, and making sure the things I design feed back into the shared library.</p>
+                <div class="emp-highlights">
+                  <div class="emp-highlight">Creating and proposing new components based on product needs</div>
+                  <div class="emp-highlight">Aligning with the DS team on patterns and usage</div>
+                  <div class="emp-highlight">Flagging inconsistencies found during day-to-day design work</div>
+                  <div class="emp-highlight">Keeping delivered designs in sync with the component library</div>
+                </div>
+              </div>
+              <div class="emp-footer">
+                <a href="https://slsp.sk" target="_blank" rel="noopener" class="emp-tab-link">slsp.sk ↗</a>
+              </div>
             </div>
-            <span class="work-card-arrow">↗</span>
           </div>
-        </a>
+        </div>
 
-        <a href="work/nda-1.html" class="work-card">
-          <div class="work-card-thumb work-card-thumb--logo">
-            <img src="assets/BadgeNDA.png" alt="NDA Project 01" style="padding:80px;">
-            <div class="work-card-overlay"><span>View project</span></div>
-          </div>
-          <div class="work-card-info">
-            <div>
-              <p class="work-card-title">NDA Project 01</p>
-              <p class="work-card-meta">UI Design · Component Library</p>
+        <!-- ── SYGIC ──────────────────── -->
+        <div class="work-group">
+          <button class="work-group-header" onclick="toggleGroup(this)">
+            <div class="wg-left">
+              <span class="wg-num">03</span>
+              <span class="wg-name">Sygic</span>
+              <span class="wg-period">2021 – 2023</span>
             </div>
-            <span class="work-card-arrow">↗</span>
-          </div>
-        </a>
-      </div>
-
-      <!-- → link -->
-      <div class="work-cta">
-        <a href="#contact" class="link-underline">→ &nbsp;Available for new projects</a>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── Employment ─────────────────────────────────────────────────── -->
-  <section id="employment" class="sec reveal" style="padding-top: 80px;">
-    <span class="sec-label">Employment</span>
-    <div class="work-scroll" id="empScroll">
-      <div class="work-card">
-        <div class="work-card-thumb">
-          <img src="assets/Slovenská sporitelna.png" alt="Slovenská sporiteľňa">
-          <div class="emp-card-overlay">
-            <span>2023 – present</span>
-            <p>Designing digital products and internal tools, contributing to a company-wide design system, and collaborating across teams to deliver consistent, user-centered experiences.</p>
-          </div>
-        </div>
-        <div class="work-card-info">
-          <div>
-            <p class="work-card-title">Slovenská sporiteľňa</p>
-            <p class="work-card-meta">UX/UI Designer &nbsp;·&nbsp; 2023 – present</p>
-          </div>
-        </div>
-      </div>
-      <div class="work-card">
-        <div class="work-card-thumb">
-          <img src="assets/Sygic.png" alt="Sygic">
-          <div class="emp-card-overlay">
-            <span>2021 – 2023</span>
-            <p>Defined customer journeys, built and tested mockups with users, and reviewed prototypes from a UX perspective. Collaborated closely with Product Managers and R&D teams on functional specs and product development.</p>
+            <span class="wg-toggle">+</span>
+          </button>
+          <div class="work-group-body">
+            <div class="work-emp-expanded">
+              <!-- Red hero -->
+              <div class="emp-hero">
+                <span class="emp-hero-label">03 · Employment · Bratislava</span>
+                <div class="emp-hero-title">UX Designer Junior<br>@ Sygic</div>
+                <div class="emp-hero-meta">Sygic · Bratislava · 2021 – 2023</div>
+              </div>
+              <!-- Tabs nav -->
+              <div class="emp-tab-nav">
+                <button class="emp-tab-btn active" onclick="switchTab(this, 'sygic-ux')">UX Design</button>
+              </div>
+              <!-- Tab: UX Design -->
+              <div class="emp-tab-content active" id="sygic-ux">
+                <p>Working as part of the UX team on a global navigation platform with 200M+ downloads — covering consumer apps, web, e-shop, and B2B products.</p>
+                <div class="emp-highlights">
+                  <div class="emp-highlight">Defining optimal customer journeys across apps, websites, and e-shop</div>
+                  <div class="emp-highlight">Creating mock-ups for new products and features, followed by user testing</div>
+                  <div class="emp-highlight">Reviewing prototypes from a UX perspective — navigation flows, control placement, menu structure</div>
+                  <div class="emp-highlight">Collaborating with PM on functional product specifications</div>
+                  <div class="emp-highlight">Working with R&amp;D teams throughout product development</div>
+                  <div class="emp-highlight">Presenting UX team outputs at Sprint Reviews</div>
+                </div>
+              </div>
+              <div class="emp-footer">
+                <a href="https://sygic.com" target="_blank" rel="noopener" class="emp-tab-link">sygic.com ↗</a>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="work-card-info">
-          <div>
-            <p class="work-card-title">Sygic</p>
-            <p class="work-card-meta">UX/UI Designer</p>
-          </div>
+
+      </div>
+    </div>
+    <div class="card-foot">
+      <button class="btn btn-primary" onclick="reveal('card-next', 'pm-next', 'pm-work')">Continue →</button>
+    </div>
+  </div>
+
+  <div class="connector hidden" id="conn-next"></div>
+
+  <!-- ── 05 · WHAT'S NEXT ─────────────────────────────────── -->
+  <div class="card diamond-card hidden" id="card-next">
+    <div class="diamond-inner">
+      <div class="card-head">
+        <h2 class="card-title">What's next?</h2>
+      </div>
+      <div class="choose-body">
+        <p class="choose-title">Where do we go from here?</p>
+        <div class="choose-btns">
+          <button class="btn btn-primary" onclick="showContact('pm-next')">Let's talk →</button>
+          <button class="btn btn-outline" onclick="reveal('card-personal', 'pm-personal', 'pm-next')">Get to know me better</button>
+          <button class="btn btn-outline" onclick="reveal('card-want', 'pm-want', 'pm-next')">What I want</button>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- ── Skills ────────────────────────────────────────────────────── -->
-  <section id="skills" class="sec reveal">
-    <span class="sec-label">What I do</span>
-    <div>
+  <div class="connector hidden" id="conn-personal"></div>
 
-      <div class="skills-words">
-        <span class="skill-word active" data-tab="ux">UX Design</span>
-        <span class="skill-word" data-tab="ui">UI Design</span>
-        <span class="skill-word" data-tab="ds">Design System</span>
-        <span class="skill-word" data-tab="dtc">Design to Code</span>
+  <!-- ── PERSONAL ─────────────────────────────────────────── -->
+  <div class="card hidden" id="card-personal">
+    <div class="card-head">
+      <span class="card-tag">beyond_work</span>
+      <h2 class="card-title">Why freelance?</h2>
+    </div>
+    <div class="card-body">
+      <p>I work full-time at Slovenská sporiteľňa and take on selected freelance projects on the side. Not out of necessity, but because working across different industries and teams keeps me sharp and pushes me to grow.</p>
+      <p>I am not chasing volume. I am chasing the kind of work that challenges me, forces me to think differently, and actually moves things forward.</p>
+
+      <div class="personal-hobbies">
+        <span class="personal-hobbies-label">Outside work</span>
+        <ul class="personal-list">
+          <li>🏋️ Strength training — regularly, consistently, no excuses</li>
+          <li>🏃 Cardio — running and interval training as a mental reset</li>
+          <li>⚽ Football — play recreationally, follow it seriously</li>
+          <li>🎮 Games &amp; tech — always curious about how things are made</li>
+          <li>☕ Coffee &amp; conversations — the best feedback happens outside the office</li>
+          <li>📖 History — especially Slovak history and the SNP era</li>
+          <li>🎬 Životy slávnych — YouTube channel I follow religiously</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card-foot">
+      <button class="btn btn-primary" onclick="showContact('pm-personal')">Let's talk →</button>
+    </div>
+  </div>
+
+  <div class="connector hidden" id="conn-want"></div>
+
+  <!-- ── WHAT I WANT ──────────────────────────────────────── -->
+  <div class="card hidden" id="card-want">
+    <div class="card-head">
+      <span class="card-tag">ambitions</span>
+      <h2 class="card-title">What I want</h2>
+    </div>
+    <div class="card-body">
+      <p>I want to design things that matter. Not just ship screens — but actually understand the problem, be close to real users, and see the impact of what I build.</p>
+
+      <div class="pitch-section" style="margin-top: 24px;">
+        <div class="pitch-section-label">What drives me</div>
+        <ul class="pitch-list">
+          <li>Hard design challenges where the solution isn't obvious</li>
+          <li>Seeing real people use what I designed — and it actually helping them</li>
+          <li>Work where design has measurable consequences, not just aesthetic ones</li>
+        </ul>
       </div>
 
-      <!-- UX Design and research -->
-      <div class="skills-panel active" data-panel="ux">
-        <div class="skills-text">
-          <p>I conduct user research, map out UX flows, and build wireframes from scratch. I focus on understanding user needs and translating them into structured, logical experiences before a single pixel is designed.</p>
-          <a href="#contact" class="link-underline">→ &nbsp;Start a project</a>
-        </div>
-        <div class="skills-img">
-          <img src="assets/UX Design.png" alt="">
-        </div>
-      </div>
-
-      <!-- UI Design -->
-      <div class="skills-panel" data-panel="ui">
-        <div class="skills-text">
-          <p>From wireframes to pixel-perfect UI — I design interfaces that are clean, consistent and developer-ready. Every detail is considered: spacing, typography, states, and edge cases.</p>
-          <a href="#contact" class="link-underline">→ &nbsp;Start a project</a>
-        </div>
-        <div class="skills-img">
-          <img src="assets/UI Design.png" alt="">
-        </div>
-      </div>
-
-      <!-- Design System -->
-      <div class="skills-panel" data-panel="ds">
-        <div class="skills-text">
-          <p>I build scalable design systems in Figma using Tokens Studio — component libraries, token structures, documentation and developer handoff. The kind of system teams actually use.</p>
-          <a href="#contact" class="link-underline">→ &nbsp;Start a project</a>
-        </div>
-        <div class="skills-img">
-          <img src="assets/Design System.png" alt="">
-        </div>
-      </div>
-
-      <div class="skills-panel" data-panel="dtc">
-        <div class="skills-text">
-          <p>Most designers stop at the handoff. I don't.</p>
-          <p>I cover the full design process — from mapping user flows and wireframes to polished UI and a scalable design system. And when the design is done, I can take it one step further and deliver a clean, coded index.html that matches the design pixel by pixel.</p>
-          <p>No backend, no complex infrastructure. Just a solid foundation your developer can build on or plug straight into your project.</p>
-          <a href="#contact" class="link-underline">→ &nbsp;Start a project</a>
-        </div>
-        <div class="skills-img">
-          <img src="assets/design-to-code.png" alt="">
-        </div>
+      <div class="pitch-section" style="margin-top: 20px;">
+        <div class="pitch-section-label">Where I want to go</div>
+        <ul class="pitch-list">
+          <li>Products that solve real human problems — not just business ones</li>
+          <li>Ideally: something in healthcare, safety, or civic tech — design that saves time, reduces friction, or saves lives</li>
+          <li>Teams that take user research seriously and design from evidence</li>
+        </ul>
       </div>
 
     </div>
-  </section>
-
-  <!-- ── Process ───────────────────────────────────────────────────── -->
-  <section id="process" class="sec reveal">
-    <span class="sec-label">How I work</span>
-    <div class="process-grid">
-      <div class="process-card">
-        <p class="p-num">01</p>
-        <p class="p-title">Briefing</p>
-        <p class="p-desc">I listen first. Goals, constraints, users, technical limits — I want the full picture.</p>
-      </div>
-      <div class="process-card">
-        <p class="p-num">02</p>
-        <p class="p-title">Proposal</p>
-        <p class="p-desc">Clear phases and deliverables. Transparent scope, honest timeline.</p>
-      </div>
-      <div class="process-card">
-        <p class="p-num">03</p>
-        <p class="p-title">Research</p>
-        <p class="p-desc">Competitors, patterns, user problems. AI helps me speed up analysis and surface what matters.</p>
-      </div>
-      <div class="process-card">
-        <p class="p-num">04</p>
-        <p class="p-title">Design &amp; Ideation</p>
-        <p class="p-desc">Sketches and wireframes in multiple directions. Together we pick the one that fits.</p>
-      </div>
-      <div class="process-card">
-        <p class="p-num">05</p>
-        <p class="p-title">Prototyping</p>
-        <p class="p-desc">Interactive prototype close to the real thing. We refine details and logic together.</p>
-      </div>
-      <div class="process-card">
-        <p class="p-num">06</p>
-        <p class="p-title">Delivery</p>
-        <p class="p-desc">Clean Figma file, developer-ready specs, all states covered. If something needs fixing, I handle it.</p>
-      </div>
+    <div class="card-foot">
+      <button class="btn btn-primary" onclick="showContact('pm-want')">Let's talk →</button>
     </div>
-  </section>
+  </div>
 
-  <!-- ── Contact ───────────────────────────────────────────────────── -->
-  <section id="contact" class="sec reveal" style="padding-bottom: 160px; grid-template-columns: clamp(200px, 28vw, 420px) 1fr;">
-    <div class="contact-char-left">
-      <img src="assets/contact-image.png" alt="Michal Podskoč">
+  <div class="connector hidden" id="conn-contact"></div>
+
+  <!-- ── 06 · CONTACT ─────────────────────────────────────── -->
+  <div class="card hidden" id="card-contact">
+    <div class="card-head">
+      <span class="card-tag">contact</span>
+      <h2 class="card-title" id="contact-title">Get in touch</h2>
     </div>
-    <div style="display: flex; justify-content: flex-end; align-items: center; align-self: center;">
-      <a href="mailto:michal.podskoc@gmail.com" class="contact-email">→ &nbsp;michal.podskoc@gmail.com</a>
-    </div>
-  </section>
 
-  <!-- ── Footer ────────────────────────────────────────────────────── -->
-  <footer>
-
-    <div class="footer-nav-row">
-      <div class="footer-nav-group">
-        <h4>Site</h4>
-        <a href="#work">Work</a>
-        <a href="#about">About</a>
-        <a href="#process">Process</a>
-        <a href="#contact">Contact</a>
-      </div>
-      <div class="footer-nav-group">
-        <h4>Social</h4>
-        <a href="https://www.linkedin.com/in/michal-podskoč-57b64218b" target="_blank" rel="noopener">LinkedIn</a>
+    <!-- SHORT version (pitch path) -->
+    <div class="contact-body" id="contact-short">
+      <span class="contact-label">Available for new projects</span>
+      <div class="choose-btns">
+        <a href="mailto:michal.podskoc@gmail.com" class="btn btn-outline">→ michal.podskoc@gmail.com</a>
+        <a href="https://www.linkedin.com/in/michal-podskoč-57b64218b" target="_blank" rel="noopener" class="btn btn-outline">Linkedin ↗</a>
       </div>
     </div>
 
-    <div class="footer-name-row">
-      <div>
-        <span class="footer-name">MICHAL</span>
-        <span class="footer-name">PODSKOČ</span>
-      </div>
-      <div class="footer-char">
-        <img src="assets/character-alt.svg" alt="">
+    <!-- LONG version (work path) -->
+    <div class="contact-body" id="contact-long" style="display:none;">
+      <p class="cl-text">
+        You went through the whole thing. The work, the process, what I want — and you're still here. That probably means we're a decent fit.<br><br>
+        I am not looking for just any project. I am looking for the right one. If something clicked while you were reading, let's talk about it.
+      </p>
+
+      <span class="cl-section-label">Projects I'm open to</span>
+      <ul class="cl-list">
+        <li>Innovative startups building something that didn't exist before</li>
+        <li>Products that help people — healthcare, safety, civic tech, social impact</li>
+        <li>Sports apps and platforms — combining passion with craft</li>
+        <li>Any challenge complex enough to be interesting — industry is secondary</li>
+      </ul>
+
+      <div class="choose-btns" style="margin-top:12px;">
+        <a href="mailto:michal.podskoc@gmail.com" class="btn btn-outline">→ michal.podskoc@gmail.com</a>
+        <a href="https://www.linkedin.com/in/michal-podskoč-57b64218b" target="_blank" rel="noopener" class="btn btn-outline">Linkedin ↗</a>
       </div>
     </div>
+  </div>
 
-    <div class="footer-bottom">
-      <p class="footer-copy">© 2025 Michal Podskoč</p>
-      <p class="footer-copy">UX/UI Designer</p>
-    </div>
+</main>
 
-  </footer>
+<!-- ── FOOTER ────────────────────────────────────────────── -->
+<footer class="footer-end">
+  <span class="footer-copy">© 2026 Michal Podskoč</span>
+</footer>
 
-  <script>
-    (function () {
-      const nav    = document.getElementById('nav');
-      const burger = document.getElementById('burger');
-      const mobile = document.getElementById('nav-mobile');
-      const scroll = document.getElementById('workScroll');
-      const empScroll = document.getElementById('empScroll');
+<script>
+  // ── State ───────────────────────────────────────────────
+  const steps = ['pm-start', 'pm-about', 'pm-choose', 'pm-work', 'pm-pitch', 'pm-next', 'pm-contact'];
+  let pitchTimer = null;
+  let pitchSeconds = 30;
 
-      /* fit hero name to exact inner width (excludes padding) */
-      function fitHeroName() {
-        const block = document.querySelector('.hero-name-block');
-        const name  = document.querySelector('.hero-name');
-        if (!block || !name) return;
-        const cs = getComputedStyle(block);
-        const inner = block.clientWidth
-          - parseFloat(cs.paddingLeft)
-          - parseFloat(cs.paddingRight);
+  // ── Contact variant ─────────────────────────────────────
+  // pitch path = short; work/personal/want/next path = long
+  const PITCH_SOURCES = new Set(['pm-pitch']);
+  function showContact(pmDoneId) {
+    const isShort = PITCH_SOURCES.has(pmDoneId);
+    document.getElementById('contact-short').style.display = isShort ? '' : 'none';
+    document.getElementById('contact-long').style.display  = isShort ? 'none' : '';
+    document.getElementById('contact-title').textContent   = isShort ? 'Get in touch' : 'Let\'s work together';
+    reveal('card-contact', 'pm-contact', pmDoneId);
+  }
 
-        function binaryFit(el, getWidth) {
-          let lo = 8, hi = 400;
-          el.style.fontSize = hi + 'px';
-          while (hi - lo > 0.25) {
-            const mid = (lo + hi) / 2;
-            el.style.fontSize = mid + 'px';
-            if (getWidth(el) <= inner) lo = mid; else hi = mid;
-          }
-          el.style.fontSize = lo + 'px';
-        }
+  // ── Reveal a card ───────────────────────────────────────
+  function reveal(cardId, pmActiveId, pmDoneId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
 
-        if (window.innerWidth <= 768) {
-          /* mobile: fit each line, then use the smaller size for both */
-          name.style.fontSize = '';
-          const lines = Array.from(name.querySelectorAll('.hero-name-line'));
-          const sizes = lines.map(line => {
-            binaryFit(line, el => el.scrollWidth);
-            return parseFloat(line.style.fontSize);
+    // Show the connector above this card
+    const connId = 'conn-' + cardId.replace('card-', '');
+    const conn = document.getElementById(connId);
+    if (conn) conn.classList.remove('hidden');
+
+    // Show the card
+    card.classList.remove('hidden');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        card.classList.add('visible');
+        setTimeout(() => scrollToCard(cardId), 80);
+      });
+    });
+
+    // Update process map
+    updateMap(pmActiveId, pmDoneId);
+
+    // Start pitch timer if showing pitch card
+    if (cardId === 'card-pitch') startPitchTimer();
+  }
+
+  // ── Scroll to card ──────────────────────────────────────
+  function scrollToCard(cardId) {
+    const el = document.getElementById(cardId);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 40;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  }
+
+  // ── Update process map ──────────────────────────────────
+  function updateMap(activeId, doneId) {
+    if (doneId) {
+      const doneNode = document.getElementById(doneId);
+      if (doneNode) { doneNode.classList.remove('active'); doneNode.classList.add('done'); }
+    }
+    if (activeId) {
+      // Ensure only one active node at a time
+      document.querySelectorAll('.pm-node.active').forEach(n => {
+        if (n.id !== activeId) { n.classList.remove('active'); }
+      });
+      const activeNode = document.getElementById(activeId);
+      if (activeNode) { activeNode.classList.remove('done'); activeNode.classList.add('active'); }
+    }
+    updateLines();
+    updateReachable(activeId);
+  }
+
+  // ── Mark reachable next steps ────────────────────────────
+  function updateReachable(activeId) {
+    document.querySelectorAll('.pm-node.reachable').forEach(n => n.classList.remove('reachable'));
+    const map = {
+      'pm-start':    ['pm-about'],
+      'pm-about':    ['pm-choose'],
+      'pm-choose':   ['pm-work', 'pm-pitch'],
+      'pm-work':     ['pm-next'],
+      'pm-pitch':    ['pm-work', 'pm-contact'],
+      'pm-next':     ['pm-personal', 'pm-want', 'pm-contact'],
+      'pm-personal': ['pm-contact'],
+      'pm-want':     ['pm-contact'],
+      'pm-contact':  [],
+    };
+    (map[activeId] || []).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('reachable');
+    });
+  }
+
+  // ── Update connector line colours ───────────────────────
+  function updateLines() {
+    const done = id => { const el = document.getElementById(id); return el && el.classList.contains('done'); };
+    const visited = id => { const el = document.getElementById(id); return el && (el.classList.contains('done') || el.classList.contains('active')); };
+    const setLine = (id, on) => { const el = document.getElementById(id); if (el) el.classList.toggle('pm-active', on); };
+
+    setLine('pm-line-start-about',    done('pm-start'));
+    setLine('pm-line-about-choose',   done('pm-about'));
+    setLine('pm-line-choose-work',    done('pm-choose') && visited('pm-work') && !visited('pm-pitch'));
+    setLine('pm-line-choose-pitch',   done('pm-choose') && visited('pm-pitch'));
+    setLine('pm-line-pitch-work',     done('pm-pitch') && visited('pm-work'));
+    setLine('pm-line-work-next',      done('pm-work'));
+    setLine('pm-line-pitch-contact',  done('pm-pitch') && visited('pm-contact') && !visited('pm-next'));
+    setLine('pm-line-next-personal',  done('pm-next') && visited('pm-personal'));
+    setLine('pm-line-next-want',      done('pm-next') && visited('pm-want'));
+    setLine('pm-line-want-contact',     done('pm-want'));
+    setLine('pm-line-personal-contact', done('pm-personal'));
+    setLine('pm-line-next-contact',     done('pm-next') && visited('pm-contact') && !visited('pm-personal') && !visited('pm-want'));
+  }
+
+  // ── Path choice ─────────────────────────────────────────
+  function choosePath(path) {
+    updateMap(null, 'pm-choose');
+
+    if (path === 'a') {
+      reveal('card-work', 'pm-work', 'pm-choose');
+    } else {
+      // Path B — show pitch
+      const conn = document.getElementById('conn-pitch');
+      if (conn) conn.classList.remove('hidden');
+      const card = document.getElementById('card-pitch');
+      if (card) {
+        card.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            card.classList.add('visible');
+            setTimeout(() => scrollToCard('card-pitch'), 80);
           });
-          const minSize = Math.min(...sizes);
-          lines.forEach(line => line.style.fontSize = minSize + 'px');
-        } else {
-          /* desktop: single line */
-          name.querySelectorAll('.hero-name-line').forEach(l => l.style.fontSize = '');
-          binaryFit(name, el => el.scrollWidth);
-        }
-      }
-
-      document.fonts.ready.then(fitHeroName);
-      window.addEventListener('resize', fitHeroName, { passive: true });
-
-      /* sticky nav */
-      window.addEventListener('scroll', () => {
-        nav.classList.toggle('scrolled', window.scrollY > 40);
-      }, { passive: true });
-
-      /* hamburger */
-      burger.addEventListener('click', () => {
-        const open = mobile.classList.toggle('open');
-        document.body.style.overflow = open ? 'hidden' : '';
-      });
-      document.querySelectorAll('.m-link').forEach(l => {
-        l.addEventListener('click', () => {
-          mobile.classList.remove('open');
-          document.body.style.overflow = '';
-        });
-      });
-
-      /* drag-to-scroll on work + employment rows */
-      function makeDraggable(el) {
-        let isDown = false, startX, left;
-        el.addEventListener('mousedown', e => {
-          isDown = true;
-          startX = e.pageX - el.offsetLeft;
-          left = el.scrollLeft;
-        });
-        window.addEventListener('mouseup', () => { isDown = false; });
-        window.addEventListener('mousemove', e => {
-          if (!isDown) return;
-          e.preventDefault();
-          const x = e.pageX - el.offsetLeft;
-          el.scrollLeft = left - (x - startX);
         });
       }
-      makeDraggable(scroll);
-      makeDraggable(empScroll);
+      updateMap('pm-pitch', 'pm-choose');
+      startPitchTimer();
+    }
+  }
 
-
-      /* skills tab switcher */
-      document.querySelectorAll('.skill-word[data-tab]').forEach(word => {
-        word.addEventListener('click', () => {
-          const tab = word.dataset.tab;
-          document.querySelectorAll('.skill-word[data-tab]').forEach(w => w.classList.remove('active'));
-          document.querySelectorAll('.skills-panel').forEach(p => p.classList.remove('active'));
-          word.classList.add('active');
-          document.querySelector(`.skills-panel[data-panel="${tab}"]`).classList.add('active');
+  // ── Path B → show work ───────────────────────────────────
+  function showWorkFromPitch() {
+    stopPitchTimer();
+    updateMap('pm-work', 'pm-pitch');
+    const workCard = document.getElementById('card-work');
+    const connWork = document.getElementById('conn-work');
+    if (connWork) connWork.classList.remove('hidden');
+    if (workCard && workCard.classList.contains('hidden')) {
+      workCard.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          workCard.classList.add('visible');
+          setTimeout(() => scrollToCard('card-work'), 80);
         });
       });
-    })();
+    } else {
+      scrollToCard('card-work');
+    }
+  }
 
-    /* ── Loader ──────────────────────────────────────────────────── */
-    (function () {
-      const loader = document.getElementById('loader');
-      const icon   = document.getElementById('loaderIcon');
-      if (!loader) return;
+  // ── Accordion ───────────────────────────────────────────
+  function switchTab(btn, tabId) {
+    const nav = btn.closest('.emp-tab-nav');
+    const expanded = btn.closest('.work-emp-expanded');
+    nav.querySelectorAll('.emp-tab-btn').forEach(b => b.classList.remove('active'));
+    expanded.querySelectorAll('.emp-tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
 
-      /* wait for icon animation to finish, then fade loader out */
-      setTimeout(() => {
-        loader.classList.add('fade');
-        setTimeout(() => {
-          loader.classList.add('hidden');
-          document.querySelectorAll('#hero .reveal').forEach((el, i) => {
-            setTimeout(() => el.classList.add('visible'), i * 100);
-          });
-        }, 620);
-      }, 2750);
-    })();
+  function toggleGroup(btn) {
+    const body = btn.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    btn.classList.toggle('open', !isOpen);
+    body.classList.toggle('open', !isOpen);
+  }
 
-    /* ── Scroll reveal ───────────────────────────────────────────── */
-    (function () {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add('visible');
-            obs.unobserve(e.target);
-          }
-        });
-      }, { threshold: 0.08 });
+  function toggleItem(btn) {
+    const body = btn.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    btn.classList.toggle('open', !isOpen);
+    body.classList.toggle('open', !isOpen);
+  }
 
-      document.querySelectorAll('.reveal:not(#hero .reveal)').forEach(el => obs.observe(el));
-    })();
-  </script>
+  // ── Pitch timer ─────────────────────────────────────────
+  function startPitchTimer() {
+    stopPitchTimer();
+    pitchSeconds = 30;
+    updateTimerDisplay();
+    pitchTimer = setInterval(() => {
+      pitchSeconds--;
+      if (pitchSeconds < 0) pitchSeconds = 0;
+      updateTimerDisplay();
+      if (pitchSeconds === 0) {
+        stopPitchTimer();
+        setTimeout(() => showContact('pm-pitch'), 600);
+      }
+    }, 1000);
+  }
+
+  function stopPitchTimer() {
+    if (pitchTimer) { clearInterval(pitchTimer); pitchTimer = null; }
+  }
+
+  function updateTimerDisplay() {
+    const el = document.getElementById('pitch-timer');
+    if (el) el.textContent = '0:' + String(pitchSeconds).padStart(2, '0');
+  }
+
+  // ── Process map node click → scroll to card ─────────────
+  function pmNodeClick(nodeId) {
+    const node = document.getElementById(nodeId);
+    if (!node) return;
+
+    // Reachable node — trigger the navigation action
+    if (node.classList.contains('reachable') && !node.classList.contains('done') && !node.classList.contains('active')) {
+      const currentActive = document.querySelector('.pm-node.active');
+      const fromId = currentActive ? currentActive.id : null;
+      const reachableActions = {
+        'pm-about':    () => reveal('card-about',    'pm-about',    'pm-start'),
+        'pm-choose':   () => reveal('card-choose',   'pm-choose',   'pm-about'),
+        'pm-work':     () => {
+          const pitchDone = document.getElementById('pm-pitch')?.classList.contains('done');
+          if (pitchDone) showWorkFromPitch(); else choosePath('a');
+        },
+        'pm-pitch':    () => choosePath('b'),
+        'pm-next':     () => reveal('card-next',     'pm-next',     'pm-work'),
+        'pm-personal': () => reveal('card-personal', 'pm-personal', 'pm-next'),
+        'pm-want':     () => reveal('card-want',     'pm-want',     'pm-next'),
+        'pm-contact':  () => showContact(fromId || 'pm-next'),
+      };
+      const action = reachableActions[nodeId];
+      if (action) action();
+      return;
+    }
+
+    if (!node.classList.contains('done') && !node.classList.contains('active')) return;
+    const cardMap = {
+      'pm-start':    'card-hello',
+      'pm-about':    'card-about',
+      'pm-choose':   'card-choose',
+      'pm-work':     'card-work',
+      'pm-pitch':    'card-pitch',
+      'pm-next':     'card-next',
+      'pm-personal': 'card-personal',
+      'pm-want':     'card-want',
+      'pm-contact':  'card-contact',
+    };
+    // Move active to clicked node, previous active → done
+    document.querySelectorAll('.pm-node.active').forEach(n => {
+      if (n.id !== nodeId) { n.classList.remove('active'); n.classList.add('done'); }
+    });
+    node.classList.remove('done');
+    node.classList.add('active');
+    updateLines();
+    updateReachable(nodeId);
+    const cardId = cardMap[nodeId];
+    if (cardId) scrollToCard(cardId);
+  }
+
+  // Init reachable on page load
+  updateReachable('pm-start');
+
+  // Align process map top with card-hello top
+  function alignProcessMap() {
+    const cardHello = document.getElementById('card-hello');
+    const pm = document.getElementById('process-map');
+    if (!cardHello || !pm) return;
+    const rect = cardHello.getBoundingClientRect();
+    pm.style.top = 'auto';
+    pm.style.bottom = (window.innerHeight - rect.bottom) + 'px';
+  }
+  alignProcessMap();
+  window.addEventListener('resize', alignProcessMap);
+
+  // ── CASE STUDY DIALOG ───────────────────────────────────────
+  const CS_DATA = {
+    svetdveri: {
+      title: 'Svet Dverí',
+      meta: 'Freelance · 2026',
+      img: null,
+      role: 'UI Designer',
+      year: '2026',
+      type: 'Design System · UI Design',
+      liveUrl: 'https://konfigurator.svetdveri.sk/',
+      liveLabel: 'konfigurator.svetdveri.sk',
+      challenge: 'Svet Dverí needed a design system built entirely from scratch. There were no shared tokens, no component library, and no visual consistency across their configurator and other digital surfaces. Before any screen could be designed, the foundation had to be laid properly.',
+      deliverables: [
+        { num: '01', title: 'Color Token System', desc: 'Defined the full color palette together with their developer, then structured it into Primitives and Semantics using Token Studio. Generated all color, typography, and spacing tokens.' },
+        { num: '02', title: 'Multibrand Design System', desc: 'Built a flexible multibrand design system in Figma using modes — brand switching was handled entirely within a single Figma file, no duplication needed.' },
+        { num: '03', title: 'Pixel-Perfect UI Screens', desc: 'Designed key product screens with precise visual execution — every detail consistent with the token system, handoff-ready, and built to the standard the product deserved.' },
+      ],
+      impact: null,
+    },
+    talendly: {
+      title: 'Talendly',
+      meta: 'Freelance · 2025–2026',
+      img: 'assets/talendly-cover.webp',
+      role: 'UX/UI Designer',
+      year: '2025–2026',
+      type: 'Design System · UX/UI',
+      liveUrl: 'https://www.talendly.sk/',
+      liveLabel: 'talendly.sk',
+      challenge: 'Talendly was growing fast — but without a consistent design foundation. Components were created ad hoc, visual style varied across screens, and the gap between design and development was slowing the team down. The product needed a scalable design system before the inconsistencies became technical debt.',
+      deliverables: [
+        { num: '01', title: 'Design System from Scratch', desc: 'Built the entire design foundation — visual principles, color system, typography, spacing, layout rules, interaction patterns, and component behavior. A single source of truth for the whole product.' },
+        { num: '02', title: 'Pixel-Perfect UI Design', desc: 'Delivered clean, precise UI for key features and screens with a strong focus on visual clarity and consistency.' },
+        { num: '03', title: 'UX & UI Consulting', desc: 'Ongoing reviews of user flows and information architecture — keeping the product intuitive as it grew.' },
+        { num: '04', title: 'Component Library', desc: 'Flexible, scalable component library built for designer-developer collaboration. Every component systematic, reusable, and ready for implementation.' },
+      ],
+      impact: [
+        'Faster development cycles with less back-and-forth between design and engineering.',
+        'Unified visual language across the entire interface.',
+        'Clear design rules that scale with the team.',
+      ],
+    },
+    nda1: {
+      title: 'NDA Project 01',
+      meta: 'Confidential · 2025',
+      img: 'assets/nda1-cover.png',
+      role: 'UI Designer',
+      year: '2025',
+      type: 'UI Design · Component Library',
+      liveUrl: null,
+      liveLabel: null,
+      challenge: 'The product had an existing design foundation, but UI quality wasn\'t keeping pace with the product\'s ambitions. Components were inconsistent, the library had accumulated debt, and the gap between design and production was creating friction. My role was to elevate quality and bring structure back to the system.',
+      deliverables: [
+        { num: '01', title: 'Pixel-Perfect UI Design', desc: 'Precise, detail-oriented screens focused on clarity, consistency, and a modern visual standard — prepared for clean developer handoff.' },
+        { num: '02', title: 'Design Library Management', desc: 'Maintained and optimized the existing design library — reducing inconsistencies, cleaning up debt, keeping the system easy to use for designers and developers.' },
+        { num: '03', title: 'Component Expansion', desc: 'Extended the library with new reusable components that improved design speed and strengthened consistency as the product evolved.' },
+      ],
+      impact: [
+        'Higher UI quality and visual consistency across the product.',
+        'Faster design and development — fewer decisions to make from scratch.',
+        'A cleaner library the team can actually maintain.',
+      ],
+    },
+    nda2: {
+      title: 'NDA Project 02',
+      meta: 'Confidential · 2025',
+      img: 'assets/nda2-cover.png',
+      role: 'UI Designer',
+      year: '2025',
+      type: 'UI Design · Design System',
+      liveUrl: null,
+      liveLabel: null,
+      challenge: 'The product had a design system in place, but it had grown organically — without clear conventions, inconsistent naming, and components that didn\'t map cleanly to what developers were building. The system needed refinement, not a rebuild.',
+      deliverables: [
+        { num: '01', title: 'Pixel-Perfect UI Design', desc: 'Polished UI screens with precise visual execution — consistent, clear, and built with implementation in mind.' },
+        { num: '02', title: 'Design System Refinement', desc: 'Reviewed and restructured the existing system — clarified naming conventions, resolved inconsistencies, and aligned component logic with how developers actually use it.' },
+      ],
+      impact: [
+        'A design system the team can navigate without a guide.',
+        'Tighter alignment between design files and production.',
+        'More efficient collaboration across the team.',
+      ],
+    },
+  };
+
+  function openCS(key) {
+    const d = CS_DATA[key];
+    if (!d) return;
+    const overlay = document.getElementById('cs-overlay');
+
+    // Cover
+    const coverEl = document.getElementById('cs-cover');
+    if (d.img) {
+      coverEl.innerHTML = `<img src="${d.img}" alt="${d.title}">`;
+      coverEl.style.display = 'block';
+    } else {
+      coverEl.innerHTML = `<div class="cs-cover-text">${d.title}</div>`;
+      coverEl.style.display = 'block';
+    }
+
+    // Meta + title
+    document.getElementById('cs-project-meta').textContent = d.meta;
+    document.getElementById('cs-title').textContent = d.title;
+
+    // Info row
+    let infoHTML = `
+      <div class="cs-info-item"><span class="cs-info-label">Role</span><span class="cs-info-value">${d.role}</span></div>
+      <div class="cs-info-item"><span class="cs-info-label">Year</span><span class="cs-info-value">${d.year}</span></div>
+      <div class="cs-info-item"><span class="cs-info-label">Type</span><span class="cs-info-value">${d.type}</span></div>
+    `;
+    if (d.liveUrl) {
+      infoHTML += `<div class="cs-info-item"><span class="cs-info-label">Live product</span><a class="cs-info-link" href="${d.liveUrl}" target="_blank" rel="noopener">${d.liveLabel} ↗</a></div>`;
+    }
+    document.getElementById('cs-info-row').innerHTML = infoHTML;
+
+    // Challenge
+    document.getElementById('cs-challenge').textContent = d.challenge;
+
+    // Deliverables
+    document.getElementById('cs-deliverables').innerHTML = d.deliverables.map(del =>
+      `<div class="cs-deliverable">
+        <span class="cs-del-num">${del.num}</span>
+        <div>
+          <div class="cs-del-title">${del.title}</div>
+          <div class="cs-del-desc">${del.desc}</div>
+        </div>
+      </div>`
+    ).join('');
+
+    // Impact
+    const impactWrap = document.getElementById('cs-impact-wrap');
+    if (d.impact && d.impact.length) {
+      impactWrap.style.display = 'block';
+      document.getElementById('cs-impact').innerHTML = d.impact.map(i => `<li>${i}</li>`).join('');
+    } else {
+      impactWrap.style.display = 'none';
+    }
+
+    // Live button
+    const liveBtn = document.getElementById('cs-live-btn');
+    if (d.liveUrl) {
+      liveBtn.href = d.liveUrl;
+      liveBtn.textContent = `Visit ${d.liveLabel} ↗`;
+      liveBtn.style.display = 'inline-flex';
+    } else {
+      liveBtn.style.display = 'none';
+    }
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCS() {
+    document.getElementById('cs-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Close on Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCS(); });
+
+  // Close on overlay click (not drag/scroll)
+  const csOverlay = document.getElementById('cs-overlay');
+  let csMouseDownTarget = null;
+  csOverlay.addEventListener('mousedown', e => { csMouseDownTarget = e.target; });
+  csOverlay.addEventListener('click', e => {
+    if (e.target === csOverlay && csMouseDownTarget === csOverlay) closeCS();
+  });
+</script>
+
+<!-- ── CASE STUDY DIALOG ──────────────────────────────────── -->
+<div class="cs-overlay" id="cs-overlay">
+  <div class="cs-panel">
+    <button class="cs-close" onclick="closeCS()" aria-label="Close">✕</button>
+    <div id="cs-cover" class="cs-cover"></div>
+    <div class="cs-body">
+      <p class="cs-project-meta" id="cs-project-meta"></p>
+      <h2 class="cs-title" id="cs-title"></h2>
+      <div class="cs-info-row" id="cs-info-row"></div>
+
+      <div class="cs-section">
+        <p class="cs-section-label">Challenge</p>
+        <p id="cs-challenge"></p>
+      </div>
+
+      <div class="cs-section">
+        <p class="cs-section-label">What I Delivered</p>
+        <div class="cs-deliverables" id="cs-deliverables"></div>
+      </div>
+
+      <div class="cs-section" id="cs-impact-wrap">
+        <p class="cs-section-label">Impact</p>
+        <ul class="cs-impact-list" id="cs-impact"></ul>
+      </div>
+
+      <a class="cs-live-btn" id="cs-live-btn" href="#" target="_blank" rel="noopener"></a>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
