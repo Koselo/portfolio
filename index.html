@@ -215,9 +215,10 @@
       border-radius: 10px;
       overflow: hidden;
       border: 1.5px solid var(--border);
-      min-height: 320px;
+      aspect-ratio: 3/4;
+      width: 100%;
     }
-    .about-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-photo img { width: 100%; height: 100%; object-fit: cover; display: block; object-position: center center; }
     .about-tools {
       display: flex;
       flex-wrap: wrap;
@@ -854,7 +855,7 @@
     }
     @media (max-width: 600px) {
       .about-layout { grid-template-columns: 1fr; }
-      .about-photo { min-height: 240px; aspect-ratio: 4/3; }
+      .about-photo { aspect-ratio: 4/3; }
       .choose-btns { flex-direction: column; width: 100%; }
       .choose-btns .btn { text-align: center; }
     }
@@ -863,6 +864,20 @@
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
       .choose-btns { flex-direction: column; width: 100%; }
       .choose-btns .btn { text-align: center; }
+
+      /* Diamond cards: let height follow width so the shape stays a proper diamond */
+      #card-choose, #card-next {
+        width: 100%;
+        max-width: none;
+        height: auto;
+        aspect-ratio: 1;
+      }
+      .diamond-card .card-title { font-size: 19px; letter-spacing: -0.02em; }
+      .diamond-card .choose-body,
+      #card-next .choose-body { width: 74%; }
+      .diamond-card .choose-body .btn { font-size: 11px; padding: 10px 14px; }
+      #card-next .choose-title { font-size: 10px; margin-bottom: 12px; }
+      #card-next .choose-body .btn { font-size: 9.5px; padding: 8px 12px; }
     }
 
     /* ── CASE STUDY DIALOG ──────────────────────────────────── */
