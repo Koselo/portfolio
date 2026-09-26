@@ -844,8 +844,11 @@
     .hidden { display: none !important; }
 
     /* ── RESPONSIVE ──────────────────────────────────────── */
-    @media (max-width: 900px) {
+    /* Hide the UX Flow sidebar until the side gutter is wide enough to clear the feed */
+    @media (max-width: 1250px) {
       #process-map { display: none; }
+    }
+    @media (max-width: 900px) {
       nav { padding: 20px 24px; }
       .feed { padding: 0 24px 80px; }
       .footer-end { padding: 0 24px 40px; }
@@ -1003,7 +1006,7 @@
 
 <!-- ── PROCESS MAP ──────────────────────────────────────── -->
 <aside id="process-map" aria-label="Progress map">
-  <div class="pm-header">UX Flow</div>
+  <div class="pm-header">Screenflow</div>
   <svg viewBox="0 0 136 220" fill="none" xmlns="http://www.w3.org/2000/svg">
 
     <!-- Lines first -->
