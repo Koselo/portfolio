@@ -68,6 +68,31 @@
     }
     .nav-email:hover { color: var(--accent); border-color: var(--accent); }
 
+    /* Language switch (SK / EN) */
+    .lang-switch {
+      display: flex;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      padding: 3px;
+      gap: 2px;
+    }
+    .lang-switch button {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .lang-switch button:hover { color: var(--text); }
+    .lang-switch button.active { background: var(--text); color: #FFFFFF; }
+
     /* ── MAIN FEED ───────────────────────────────────────── */
     .feed {
       max-width: calc(var(--card-w) + 80px);
@@ -167,7 +192,7 @@
     /* ── CONNECTOR ───────────────────────────────────────── */
     .connector {
       width: 1.5px;
-      height: 48px;
+      height: 72px;
       background: var(--border);
       flex-shrink: 0;
     }
@@ -1088,6 +1113,10 @@
     <img src="assets/character-main.svg" alt="">
     <span class="nav-logo-name">Michal Podskoč</span>
   </a>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button type="button" data-lang="sk" onclick="setLang('sk')">SK</button>
+    <button type="button" data-lang="en" onclick="setLang('en')" class="active">EN</button>
+  </div>
 </nav>
 
 <!-- ── FEED ─────────────────────────────────────────────── -->
@@ -1561,6 +1590,39 @@
           </div>
         </div>
 
+        <!-- ── UX/UI SHOWCASE ─────────────── -->
+        <div class="work-group">
+          <button class="work-group-header" onclick="toggleGroup(this)">
+            <div class="wg-left">
+              <span class="wg-num">04</span>
+              <span class="wg-name">UX/UI Showcase</span>
+              <span class="wg-period">concept &amp; real work</span>
+            </div>
+            <span class="wg-toggle">+</span>
+          </button>
+          <div class="work-group-body">
+            <div class="work-emp-expanded">
+              <!-- Red hero -->
+              <div class="emp-hero">
+                <span class="emp-hero-label">04 · Showcase · Figma</span>
+                <div class="emp-hero-title">UX/UI Showcase</div>
+                <div class="emp-hero-meta">Concept projects · Real experience</div>
+              </div>
+              <!-- Tabs nav -->
+              <div class="emp-tab-nav">
+                <button class="emp-tab-btn active" onclick="switchTab(this, 'showcase-main')">Showcase</button>
+              </div>
+              <!-- Tab: Showcase -->
+              <div class="emp-tab-content active" id="showcase-main">
+                <p>A showcase of my UX/UI skills through real-world experience and my own conceptual projects.</p>
+              </div>
+              <div class="emp-footer">
+                <a href="https://www.figma.com/design/dfUReeg9LOZjbTTceJa9Fg/Michal-Podsko%C4%8D---Showcase?node-id=5-1496&t=SvIKv36ZVIAqrhBL-1" target="_blank" rel="noopener" class="emp-tab-link">View in Figma ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="card-foot">
@@ -1718,7 +1780,9 @@
     const isShort = PITCH_SOURCES.has(pmDoneId);
     document.getElementById('contact-short').style.display = isShort ? '' : 'none';
     document.getElementById('contact-long').style.display  = isShort ? 'none' : '';
-    document.getElementById('contact-title').textContent   = isShort ? 'Get in touch' : 'Let\'s work together';
+    const contactTitle = document.getElementById('contact-title');
+    contactTitle.dataset.en  = isShort ? 'Get in touch' : 'Let\'s work together';
+    contactTitle.textContent = tr(contactTitle.dataset.en);
     reveal('card-contact', 'pm-contact', pmDoneId);
   }
 
@@ -2134,13 +2198,233 @@
   // Close on Escape
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCS(); });
 
-  // Close on overlay click (not drag/scroll)
-  const csOverlay = document.getElementById('cs-overlay');
-  let csMouseDownTarget = null;
-  csOverlay.addEventListener('mousedown', e => { csMouseDownTarget = e.target; });
-  csOverlay.addEventListener('click', e => {
-    if (e.target === csOverlay && csMouseDownTarget === csOverlay) closeCS();
+  // Close on overlay click (not drag/scroll) — the overlay markup sits after this script
+  document.addEventListener('DOMContentLoaded', () => {
+    const csOverlay = document.getElementById('cs-overlay');
+    if (!csOverlay) return;
+    let csMouseDownTarget = null;
+    csOverlay.addEventListener('mousedown', e => { csMouseDownTarget = e.target; });
+    csOverlay.addEventListener('click', e => {
+      if (e.target === csOverlay && csMouseDownTarget === csOverlay) closeCS();
+    });
   });
+
+  // ── LANGUAGE (EN / SK) ──────────────────────────────────────
+  // English lives in the HTML; this maps each English text block to Slovak.
+  // Keys are the element's innerHTML with whitespace collapsed (see normI18n).
+  const SK = {
+    "Hi.": "Ahoj.",
+    "This is my portfolio. Take a look at what I design, where I've worked, and what I'm looking for in my next role.": "Toto je moje portfólio. Pozrite si, čo navrhujem, kde som pracoval a čo hľadám v ďalšej role.",
+    "years of<br>design": "rokov<br>v dizajne",
+    "industries —<br>Fintech · Mobility · HR": "odvetvia —<br>Fintech · Mobilita · HR",
+    "products shipped<br>end-to-end": "produktov dodaných<br>end-to-end",
+    "design system<br>components contributed": "komponentov<br>do design systémov",
+    "Continue →": "Pokračovať →",
+
+    "about_me": "o_mne",
+    "Who I am": "Kto som",
+    "My name is Michal Podskoč. UX/UI designer with six years of experience designing digital products in fintech and mobility.": "Volám sa Michal Podskoč. Som UX/UI dizajnér so šiestimi rokmi skúseností s navrhovaním digitálnych produktov vo fintechu a mobilite.",
+    "Studied marketing communication in Nitra, worked at Sygic as UX/UI Designer, and today I design products at Slovenská sporiteľňa.": "Študoval som marketingovú komunikáciu v Nitre, pracoval som v Sygicu ako UX/UI dizajnér a dnes navrhujem produkty v Slovenskej sporiteľni.",
+    "I enjoy talking to users, understanding their needs, and turning insights into clear and meaningful design. I believe in simple experiences that feel natural — with a small touch of humor when it fits.": "Baví ma rozprávať sa s používateľmi, rozumieť ich potrebám a premieňať poznatky na jasný a zmysluplný dizajn. Verím v jednoduché zážitky, ktoré pôsobia prirodzene — s trochou humoru, keď sa to hodí.",
+    "UX Research": "UX výskum",
+    "Design Systems": "Design systémy",
+
+    "Choose path": "Vyberte si cestu",
+    "How do you want to continue?": "Ako chcete pokračovať?",
+    "I want to see your work →": "Chcem vidieť prácu →",
+    "I have 30 seconds ⏱": "Mám 30 sekúnd ⏱",
+
+    "quick_pitch": "rýchly_pitch",
+    "30 seconds": "30 sekúnd",
+    "UX/UI designer based in Slovakia. I work full-time at Slovenská sporiteľňa designing financial products — and take on freelance projects on the side, because different problems keep me sharp.": "UX/UI dizajnér zo Slovenska. Na plný úväzok pracujem v Slovenskej sporiteľni, kde navrhujem finančné produkty — a popri tom robím freelance projekty, pretože rôzne problémy ma udržiavajú v strehu.",
+    "What I do": "Čo robím",
+    "End-to-end product design — from research to shipped UI": "Produktový dizajn end-to-end — od výskumu po hotové UI",
+    "Design systems built to scale, not just to look good": "Design systémy stavané na škálovanie, nielen na pekný vzhľad",
+    "Collaboration with devs — I care how things are actually built": "Spolupráca s vývojármi — zaujíma ma, ako sa veci naozaj stavajú",
+    "What I've shipped": "Čo som dodal",
+    "Talendly — HR platform designed end-to-end over 6 months": "Talendly — HR platforma navrhnutá end-to-end za 6 mesiacov",
+    "Svet Dverí — full design system + brand identity from scratch": "Svet Dverí — kompletný design systém + vizuálna identita od nuly",
+    "Daily banking features used by thousands at SLSP": "Funkcie denného bankovníctva, ktoré v SLSP používajú tisíce ľudí",
+    "I have more time →": "Mám viac času →",
+    "Contact me": "Kontaktujte ma",
+
+    "selected_projects": "vybrané_projekty",
+    "My work": "Moja práca",
+    "2025 – present": "2025 – súčasnosť",
+    "2023 – present": "2023 – súčasnosť",
+    "Outcome": "Výsledok",
+    "Overview": "Prehľad",
+    "Components": "Komponenty",
+
+    "Redesigned the UI for a Slovak door configurator — clean product pages, configurator interface, and a consistent visual language across the entire product.": "Redizajn UI slovenského konfigurátora dverí — prehľadné produktové stránky, rozhranie konfigurátora a jednotný vizuálny jazyk naprieč celým produktom.",
+    "Product configurator UI — step-by-step door selection flow": "UI konfigurátora — výber dverí krok za krokom",
+    "Homepage, product listing, and detail pages": "Homepage, výpis produktov a detailné stránky",
+    "Mobile-first responsive design": "Responzívny dizajn s prístupom mobile-first",
+    "Visual language aligned with brand identity": "Vizuálny jazyk zladený s identitou značky",
+    "Built a complete design system from scratch in Figma — component library, token structure, and developer handoff documentation for a live production product.": "Postavil som kompletný design systém od nuly vo Figme — knižnicu komponentov, štruktúru tokenov a handoff dokumentáciu pre živý produkčný produkt.",
+    "Atomic component library in Figma": "Atomická knižnica komponentov vo Figme",
+    "Color, typography, and spacing token structure": "Štruktúra tokenov pre farby, typografiu a rozostupy",
+    "Handoff documentation for developers": "Handoff dokumentácia pre vývojárov",
+    "System covers configurator, e-shop, and CMS views": "Systém pokrýva konfigurátor, e-shop aj CMS",
+    "Delivered a production-ready design system and UI used by the client's development team to ship the live product.": "Dodal som design systém a UI pripravené na produkciu, s ktorými vývojový tím klienta spustil živý produkt.",
+    "Live product shipped using the delivered system": "Živý produkt spustený na dodanom systéme",
+    "Reduced design-to-dev handoff friction significantly": "Výrazne menej trenia pri odovzdávaní dizajnu vývoju",
+    "Client team independently extends components": "Tím klienta samostatne rozširuje komponenty",
+
+    "UX consulting and concept work for an HR platform connecting companies with freelance talent — translating product ideas into early UX screens and flows to show how things could work.": "UX konzultácie a koncepčná práca pre HR platformu, ktorá prepája firmy s freelance talentami — premieňanie produktových nápadov na prvé UX obrazovky a flowy, ktoré ukazujú, ako by to mohlo fungovať.",
+    "UX consulting — advising on structure, flows, and user logic": "UX konzultácie — rady k štruktúre, flowom a používateľskej logike",
+    "Draft screens showing how key flows could look and feel": "Návrhy obrazoviek, ako by mohli kľúčové flowy vyzerať a fungovať",
+    "Mapping out job posting, matching, and hiring flows": "Zmapovanie flowov pre zverejnenie ponuky, párovanie a nábor",
+    "Early onboarding concepts for both companies and freelancers": "Prvé koncepty onboardingu pre firmy aj freelancerov",
+    "Designed a clean, professional UI for the platform — dashboard, job cards, candidate profiles, and a messaging interface.": "Navrhol som čisté, profesionálne UI platformy — dashboard, karty ponúk, profily kandidátov a rozhranie na správy.",
+    "Dashboard and job listing UI": "UI dashboardu a výpisu ponúk",
+    "Candidate profile and portfolio view": "Profil kandidáta a zobrazenie portfólia",
+    "Messaging and contract management interface": "Rozhranie pre správy a správu zmlúv",
+    "Light/dark mode support": "Podpora svetlého/tmavého režimu",
+    "Built a scalable design system in Figma using Tokens Studio — multi-brand ready, with clear documentation and developer-friendly structure.": "Postavil som škálovateľný design systém vo Figme s Tokens Studio — pripravený na viac značiek, s jasnou dokumentáciou a štruktúrou priateľskou k vývojárom.",
+    "Tokens Studio integration for design tokens": "Integrácia Tokens Studio pre design tokeny",
+    "Multi-brand theme support": "Podpora tém pre viac značiek",
+    "Full component library with variants and states": "Kompletná knižnica komponentov s variantmi a stavmi",
+    "Dev documentation and handoff spec": "Dokumentácia pre vývoj a handoff špecifikácia",
+
+    "NDA Project 02": "NDA projekt 02",
+    "NDA Project 01": "NDA projekt 01",
+    "01 · Freelance · 2025 · Confidential": "01 · Freelance · 2025 · Dôverné",
+    "01 · Freelance · Confidential": "01 · Freelance · Dôverné",
+    "Confidential freelance project. Full details available upon request under NDA. The work covered UI design and design system for a product in the digital services space.": "Dôverný freelance projekt. Všetky detaily na požiadanie pod NDA. Práca zahŕňala UI dizajn a design systém pre produkt v oblasti digitálnych služieb.",
+    "UI design for a web-based digital product": "UI dizajn webového digitálneho produktu",
+    "Design system built in Figma": "Design systém postavený vo Figme",
+    "Delivered under NDA — details on request": "Dodané pod NDA — detaily na požiadanie",
+    "UI design covering key screens, interaction states, and a coherent visual language — confidential details available on request.": "UI dizajn kľúčových obrazoviek, interakčných stavov a uceleného vizuálneho jazyka — dôverné detaily na požiadanie.",
+    "Screen designs for core product flows": "Návrhy obrazoviek pre hlavné produktové flowy",
+    "Interaction states and edge cases covered": "Pokryté interakčné stavy aj hraničné prípady",
+    "Responsive breakpoints for web and mobile": "Responzívne breakpointy pre web aj mobil",
+    "Scalable design system delivered alongside the UI — component library, token structure, and usage documentation.": "Škálovateľný design systém dodaný spolu s UI — knižnica komponentov, štruktúra tokenov a dokumentácia použitia.",
+    "Component library with variants and states": "Knižnica komponentov s variantmi a stavmi",
+    "Color and typography token structure": "Štruktúra tokenov pre farby a typografiu",
+    "Developer handoff documentation": "Handoff dokumentácia pre vývojárov",
+    "NDA — not public": "NDA — neverejné",
+    "UI Design · Component Library": "UI Design · Knižnica komponentov",
+    "Confidential freelance project. Full details available upon request under NDA. Work focused on UI design and a reusable component library for a client product.": "Dôverný freelance projekt. Všetky detaily na požiadanie pod NDA. Práca sa sústredila na UI dizajn a znovupoužiteľnú knižnicu komponentov pre produkt klienta.",
+    "UI design for a client product": "UI dizajn produktu klienta",
+    "Reusable component library in Figma": "Znovupoužiteľná knižnica komponentov vo Figme",
+    "UI design for core product screens — visual language, layout system, and interaction patterns. Confidential details available on request.": "UI dizajn hlavných obrazoviek produktu — vizuálny jazyk, systém layoutu a interakčné vzory. Dôverné detaily na požiadanie.",
+    "Screen designs for key product flows": "Návrhy obrazoviek pre kľúčové produktové flowy",
+    "Consistent visual language throughout": "Jednotný vizuálny jazyk naprieč celým produktom",
+    "Responsive design for web and mobile": "Responzívny dizajn pre web aj mobil",
+    "A full component library built in Figma — covering atoms, molecules, and organisms with proper variant and state management.": "Kompletná knižnica komponentov vo Figme — atómy, molekuly aj organizmy so správnou prácou s variantmi a stavmi.",
+    "Atomic design methodology": "Metodika atomického dizajnu",
+    "Variants and interactive states for all components": "Varianty a interaktívne stavy pre všetky komponenty",
+    "Developer-ready handoff with annotations": "Handoff pre vývojárov s anotáciami",
+
+    "02 · Employment · Bratislava": "02 · Zamestnanie · Bratislava",
+    "UX/UI Designer<br>@ Slovenská sporiteľňa": "UX/UI dizajnér<br>@ Slovenská sporiteľňa",
+    "Slovenská sporiteľňa · Bratislava · 2023 – present": "Slovenská sporiteľňa · Bratislava · 2023 – súčasnosť",
+    "Designing pixel-precise UI for retail banking apps and internal tools used by millions of customers and hundreds of employees across Slovakia.": "Navrhujem pixel-perfect UI pre aplikácie retailového bankovníctva a interné nástroje, ktoré používajú milióny klientov a stovky zamestnancov po celom Slovensku.",
+    "Retail mobile banking — redesigned core flows (payments, cards, loans)": "Retailové mobilné bankovníctvo — redizajn hlavných flowov (platby, karty, úvery)",
+    "Internal back-office tools for branch employees": "Interné back-office nástroje pre zamestnancov pobočiek",
+    "Onboarding flows for new banking products": "Onboarding flowy pre nové bankové produkty",
+    "Interactive prototypes for stakeholder presentations": "Interaktívne prototypy na prezentácie pre stakeholderov",
+    "Designing end-to-end user flows and interaction logic for retail banking products. Working closely with product managers, engineers, and business stakeholders to translate requirements into clear, usable experiences.": "Navrhujem end-to-end používateľské flowy a interakčnú logiku pre produkty retailového bankovníctva. Úzko spolupracujem s produktovými manažérmi, vývojármi a biznis stakeholdermi, aby sa z požiadaviek stali jasné a použiteľné zážitky.",
+    "Defining information architecture for new product areas": "Definovanie informačnej architektúry pre nové produktové oblasti",
+    "Creating user flows, wireframes, and low-fi concepts": "Tvorba user flowov, wireframov a low-fi konceptov",
+    "Interactive prototypes for stakeholder alignment and dev handoff": "Interaktívne prototypy na zosúladenie so stakeholdermi a handoff vývoju",
+    "Collaborating with PMs and engineers throughout the design process": "Spolupráca s PM a vývojármi počas celého dizajnového procesu",
+    "Contributing to the bank-wide design system — not leading it, but actively helping shape it. Adding components, flagging inconsistencies, and making sure the things I design feed back into the shared library.": "Prispievam do celobankového design systému — nevediem ho, ale aktívne pomáham ho formovať. Pridávam komponenty, upozorňujem na nekonzistencie a dbám na to, aby sa to, čo navrhujem, vracalo späť do spoločnej knižnice.",
+    "Creating and proposing new components based on product needs": "Tvorba a návrhy nových komponentov podľa potrieb produktu",
+    "Aligning with the DS team on patterns and usage": "Zosúlaďovanie s DS tímom na vzoroch a ich použití",
+    "Flagging inconsistencies found during day-to-day design work": "Upozorňovanie na nekonzistencie z každodennej dizajnérskej práce",
+    "Keeping delivered designs in sync with the component library": "Udržiavanie dodaných návrhov v súlade s knižnicou komponentov",
+
+    "03 · Employment · Bratislava": "03 · Zamestnanie · Bratislava",
+    "UX Designer Junior<br>@ Sygic": "Junior UX dizajnér<br>@ Sygic",
+    "Working as part of the UX team on a global navigation platform with 200M+ downloads — covering consumer apps, web, e-shop, and B2B products.": "Pôsobil som v UX tíme globálnej navigačnej platformy s viac ako 200 miliónmi stiahnutí — spotrebiteľské aplikácie, web, e-shop aj B2B produkty.",
+    "Defining optimal customer journeys across apps, websites, and e-shop": "Definovanie optimálnych zákazníckych ciest naprieč aplikáciami, webmi a e-shopom",
+    "Creating mock-ups for new products and features, followed by user testing": "Tvorba mock-upov nových produktov a funkcií s následným testovaním s používateľmi",
+    "Reviewing prototypes from a UX perspective — navigation flows, control placement, menu structure": "Revízia prototypov z pohľadu UX — navigačné flowy, umiestnenie ovládacích prvkov, štruktúra menu",
+    "Collaborating with PM on functional product specifications": "Spolupráca s PM na funkčných špecifikáciách produktu",
+    "Working with R&amp;D teams throughout product development": "Spolupráca s R&amp;D tímami počas celého vývoja produktu",
+    "Presenting UX team outputs at Sprint Reviews": "Prezentovanie výstupov UX tímu na Sprint Review",
+
+    "concept &amp; real work": "koncepty &amp; reálna práca",
+    "Concept projects · Real experience": "Koncepčné projekty · Reálne skúsenosti",
+    "A showcase of my UX/UI skills through real-world experience and my own conceptual projects.": "Prezentácia mojich UX/UI schopností prostredníctvom reálnych skúseností a vlastných konceptuálnych projektov.",
+    "View in Figma ↗": "Pozrieť vo Figme ↗",
+
+    "What's next?": "Čo ďalej?",
+    "Where do we go from here?": "Kam sa pohneme ďalej?",
+    "Let's talk →": "Porozprávajme sa →",
+    "Get to know me better": "Spoznajte ma lepšie",
+    "What I want": "Čo chcem",
+
+    "beyond_work": "mimo_práce",
+    "Why freelance?": "Prečo freelance?",
+    "I work full-time at Slovenská sporiteľňa and take on selected freelance projects on the side. Not out of necessity, but because working across different industries and teams keeps me sharp and pushes me to grow.": "Na plný úväzok pracujem v Slovenskej sporiteľni a popri tom beriem vybrané freelance projekty. Nie z nutnosti, ale preto, že práca naprieč rôznymi odvetviami a tímami ma udržiava v strehu a posúva ďalej.",
+    "I am not chasing volume. I am chasing the kind of work that challenges me, forces me to think differently, and actually moves things forward.": "Nejde mi o množstvo. Hľadám prácu, ktorá ma vyzve, prinúti rozmýšľať inak a naozaj posúva veci dopredu.",
+    "Outside work": "Mimo práce",
+    "🏋️ Strength training — regularly, consistently, no excuses": "🏋️ Silový tréning — pravidelne, dôsledne, bez výhovoriek",
+    "🏃 Cardio — running and interval training as a mental reset": "🏃 Kardio — beh a intervalový tréning ako reset hlavy",
+    "⚽ Football — play recreationally, follow it seriously": "⚽ Futbal — hrám rekreačne, sledujem vážne",
+    "🎮 Games &amp; tech — always curious about how things are made": "🎮 Hry &amp; technológie — vždy ma zaujíma, ako sa veci robia",
+    "☕ Coffee &amp; conversations — the best feedback happens outside the office": "☕ Káva &amp; rozhovory — najlepší feedback prichádza mimo kancelárie",
+    "📖 History — especially Slovak history and the SNP era": "📖 História — najmä slovenská história a obdobie SNP",
+    "🎬 Životy slávnych — YouTube channel I follow religiously": "🎬 Životy slávnych — YouTube kanál, ktorý pravidelne sledujem",
+
+    "ambitions": "ambície",
+    "I want to design things that matter. Not just ship screens — but actually understand the problem, be close to real users, and see the impact of what I build.": "Chcem navrhovať veci, na ktorých záleží. Nielen dodávať obrazovky — ale naozaj pochopiť problém, byť blízko skutočným používateľom a vidieť dopad toho, čo tvorím.",
+    "What drives me": "Čo ma poháňa",
+    "Hard design challenges where the solution isn't obvious": "Náročné dizajnové výzvy, kde riešenie nie je zrejmé",
+    "Seeing real people use what I designed — and it actually helping them": "Vidieť skutočných ľudí používať to, čo som navrhol — a že im to naozaj pomáha",
+    "Work where design has measurable consequences, not just aesthetic ones": "Práca, kde má dizajn merateľný dopad, nielen estetický",
+    "Where I want to go": "Kam chcem smerovať",
+    "Products that solve real human problems — not just business ones": "Produkty, ktoré riešia skutočné ľudské problémy — nielen biznisové",
+    "Ideally: something in healthcare, safety, or civic tech — design that saves time, reduces friction, or saves lives": "Ideálne niečo v zdravotníctve, bezpečnosti alebo civic tech — dizajn, ktorý šetrí čas, znižuje trenie alebo zachraňuje životy",
+    "Teams that take user research seriously and design from evidence": "Tímy, ktoré berú používateľský výskum vážne a navrhujú na základe dát",
+
+    "contact": "kontakt",
+    "Get in touch": "Ozvite sa",
+    "Let's work together": "Poďme spolupracovať",
+    "Projects I'm open to": "Projekty, na ktoré som otvorený",
+    "Innovative startups building something that didn't exist before": "Inovatívne startupy, ktoré tvoria niečo, čo predtým neexistovalo",
+    "Products that help people — healthcare, safety, civic tech, social impact": "Produkty, ktoré pomáhajú ľuďom — zdravotníctvo, bezpečnosť, civic tech, sociálny dopad",
+    "Sports apps and platforms — combining passion with craft": "Športové aplikácie a platformy — spojenie vášne a remesla",
+    "Any challenge complex enough to be interesting — industry is secondary": "Akákoľvek výzva dosť zložitá na to, aby bola zaujímavá — odvetvie je druhoradé",
+    "You went through the whole thing. The work, the process, what I want — and you're still here. That probably means we're a decent fit.<br><br>I am not looking for just any project. I am looking for the right one. If something clicked while you were reading, let's talk about it.": "Prešli ste si to celé. Prácu, proces, čo chcem — a stále ste tu. To asi znamená, že by sme si mohli sadnúť.<br><br>Nehľadám hocijaký projekt. Hľadám ten správny. Ak vás pri čítaní niečo zaujalo, poďme sa o tom porozprávať."
+  };
+
+  const normI18n = s => s.replace(/\s*<br>\s*/g, '<br>').replace(/\s+/g, ' ').trim();
+  let currentLang = 'en';
+
+  // Collect every text-only element that has a Slovak translation, remembering its English HTML
+  const i18nEls = [];
+  document.querySelectorAll('nav *, main *, footer *, #process-map .pm-header').forEach(el => {
+    if (el.closest('svg') || el.closest('.lang-switch')) return;
+    if ([...el.children].some(k => k.tagName !== 'BR')) return;
+    if (SK[normI18n(el.innerHTML)] === undefined) return;
+    el.dataset.en = el.innerHTML;
+    i18nEls.push(el);
+  });
+
+  function tr(en) {
+    const sk = SK[normI18n(en)];
+    return currentLang === 'sk' && sk !== undefined ? sk : en;
+  }
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    i18nEls.forEach(el => { el.innerHTML = tr(el.dataset.en); });
+    document.querySelectorAll('.lang-switch button').forEach(b => {
+      const on = b.dataset.lang === lang;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on);
+    });
+    try { localStorage.setItem('lang', lang); } catch (e) {}
+  }
+
+  let savedLang = 'en';
+  try { savedLang = localStorage.getItem('lang') || 'en'; } catch (e) {}
+  setLang(savedLang);
 </script>
 
 <!-- ── CASE STUDY DIALOG ──────────────────────────────────── -->
