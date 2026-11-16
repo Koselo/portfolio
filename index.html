@@ -406,6 +406,13 @@
       font-size: 14px; color: rgba(255,255,255,0.75);
       line-height: 1.6; padding-left: 14px; position: relative;
     }
+    /* Tally form is themed dark in Tally itself and embedded with a transparent background */
+    #card-contact .cl-form {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+    /* Negative top margin offsets the empty space Tally leaves above the first field */
+    #card-contact .cl-form iframe { display: block; width: 100%; border: 0; margin-top: -44px; }
     #card-contact .cl-list li::before {
       content: '→'; position: absolute; left: 0; color: var(--accent);
     }
@@ -1753,6 +1760,11 @@
         <li>Any challenge complex enough to be interesting — industry is secondary</li>
       </ul>
 
+      <span class="cl-section-label">Send me a message</span>
+      <div class="cl-form">
+        <iframe data-tally-src="https://tally.so/embed/M1aRZ0?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" height="260" title="Contact form"></iframe>
+      </div>
+
       <div class="choose-btns" style="margin-top:12px;">
         <a href="mailto:michal.podskoc@gmail.com" class="btn btn-outline">michal.podskoc@gmail.com ↗</a>
         <a href="https://www.linkedin.com/in/michal-podskoč-57b64218b" target="_blank" rel="noopener" class="btn btn-outline">Linkedin ↗</a>
@@ -2385,6 +2397,7 @@
     "Get in touch": "Ozvite sa",
     "Let's work together": "Poďme spolupracovať",
     "Projects I'm open to": "Projekty, na ktoré som otvorený",
+    "Send me a message": "Napíšte mi správu",
     "Innovative startups building something that didn't exist before": "Inovatívne startupy, ktoré tvoria niečo, čo predtým neexistovalo",
     "Products that help people — healthcare, safety, civic tech, social impact": "Produkty, ktoré pomáhajú ľuďom — zdravotníctvo, bezpečnosť, civic tech, sociálny dopad",
     "Sports apps and platforms — combining passion with craft": "Športové aplikácie a platformy — spojenie vášne a remesla",
@@ -2456,6 +2469,21 @@
     </div>
   </div>
 </div>
+
+<!-- Tally embed loader: fills iframe[data-tally-src] and keeps its height in sync with the form -->
+<script>
+  (function () {
+    var src = 'https://tally.so/widgets/embed.js';
+    var load = function () {
+      if (typeof Tally !== 'undefined') { Tally.loadEmbeds(); return; }
+      document.querySelectorAll('iframe[data-tally-src]:not([src])').forEach(function (f) { f.src = f.dataset.tallySrc; });
+    };
+    if (typeof Tally !== 'undefined') { load(); return; }
+    var s = document.createElement('script');
+    s.src = src; s.onload = load; s.onerror = load;
+    document.body.appendChild(s);
+  })();
+</script>
 
 </body>
 </html>
